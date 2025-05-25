@@ -1,0 +1,19 @@
+.page-nav {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  padding: 1rem;
+  background-color: #D4B996;
+}
+
+.page-nav a {
+  color: #333;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.page-nav a:hover {
+  color: #666;
+}

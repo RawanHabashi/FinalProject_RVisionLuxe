@@ -1,0 +1,27 @@
+.navbar {
+  background-color: #FFF5E6;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo h1 {
+  font-size: 2rem;
+  color: #333;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #333;
+}
+
+.sign-in a {
+  text-decoration: none;
+  color: #333;
+}

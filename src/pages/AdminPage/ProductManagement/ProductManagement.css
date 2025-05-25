@@ -1,0 +1,118 @@
+.product-management {
+  background-color: #FFF5E6;
+  min-height: 100vh;
+}
+
+.admin-header {
+  background-color: white;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.admin-header nav a {
+  margin-left: 2rem;
+  text-decoration: none;
+  color: #666;
+}
+
+.logout {
+  color: #d9534f !important;
+}
+
+.product-main {
+  padding: 2rem;
+}
+
+.product-main h2 {
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.products-table {
+  background-color: white;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.product-thumbnail {
+  width: 80px;
+  height: auto;
+}
+
+.edit-btn, .delete-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+  cursor: pointer;
+}
+
+.edit-btn {
+  background-color: #D4B996;
+  color: white;
+}
+
+.delete-btn {
+  background-color: #d9534f;
+  color: white;
+}
+
+.add-product-form {
+  background-color: white;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.add-product-btn {
+  background-color: #D4B996;
+  color: white;
+  padding: 0.8rem 2rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+.add-product-btn:hover {
+  background-color: #c4a986;
+}

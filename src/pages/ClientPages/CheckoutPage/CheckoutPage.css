@@ -1,0 +1,105 @@
+.checkout-page {
+  background-color: #FFF5E6;
+  min-height: 100vh;
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.checkout-page h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.order-summary {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+}
+
+th, td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.totals {
+  border-top: 2px solid #ddd;
+  padding-top: 1rem;
+}
+
+.subtotal, .total {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  font-weight: bold;
+}
+
+.total {
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.checkout-form {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.personal-details, .payment-details {
+  margin-bottom: 2rem;
+}
+
+h3 {
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.card-extra {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.place-order-btn {
+  width: 100%;
+  padding: 1rem;
+  background-color: #D4B996;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.place-order-btn:hover {
+  background-color: #c4a986;
+}

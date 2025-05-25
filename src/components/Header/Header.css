@@ -1,0 +1,82 @@
+.header-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.main-header {
+  background-color: #D4B996;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+}
+
+.logo {
+  color: #454544a3;
+  text-decoration: none;
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-info span {
+  color: #696060;
+  font-size: 1.2rem;
+}
+
+.logout-btn {
+  padding: 0.5rem 1rem;
+  background-color: #A68B6C;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.logout-btn:hover {
+  background-color: #8B7355;
+}
+
+.admin-nav {
+  background-color: #A68B6C;
+}
+
+.nav-content {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+}
+
+.admin-nav a {
+  color: #FFF5E6;
+  text-decoration: none;
+  transition: color 0.3s;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.admin-nav a:hover {
+  color: #4A4A4A;
+}
+
+/* הוספת מרווח לתוכן העמוד */
+main {
+  margin-top: 120px;
+}

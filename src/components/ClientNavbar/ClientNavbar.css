@@ -1,0 +1,29 @@
+.client-navbar {
+  background-color: #D4B996;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.client-navbar .logo a {
+  color: #333;
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.client-navbar .nav-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.client-navbar .nav-links a {
+  color: #333;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.client-navbar .nav-links a:hover {
+  color: white;
+}

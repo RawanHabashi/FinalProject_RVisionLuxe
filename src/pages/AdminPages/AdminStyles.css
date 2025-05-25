@@ -1,0 +1,139 @@
+.admin-page {
+  background-color: #FFF5E6;
+  min-height: 100vh;
+}
+
+.admin-header {
+  background-color: #D4B996;
+  padding: 1rem 2rem;
+}
+
+.admin-header h1 {
+  margin: 0;
+  color: #333;
+}
+
+.admin-header nav {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.admin-header nav a {
+  color: #333;
+  text-decoration: none;
+}
+
+.logout {
+  margin-left: auto;
+}
+
+.admin-main {
+  padding: 2rem;
+}
+
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.category-card {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.category-card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.category-card h3 {
+  margin: 0 0 1rem 0;
+  color: #333;
+}
+
+.category-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.add-category-btn {
+  background-color: #D4B996;
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 2rem;
+}
+
+.dashboard-card a {
+  color: #D4B996;
+  text-decoration: none;
+}
+
+.reports-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.summary-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.summary-card h3 {
+  margin: 0;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.summary-card p {
+  margin: 1rem 0 0;
+  font-size: 2rem;
+  color: #D4B996;
+  font-weight: bold;
+}
+
+.reports-table {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.reports-table h3 {
+  margin: 0 0 1.5rem;
+  color: #333;
+}
+
+.reports-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.reports-table th,
+.reports-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.reports-table th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
