@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
 // הוספת מוצר חדש
 router.post('/', async (req, res) => {
     try {
-        const db = await initDb(); // ← גם כאן
+        const db = await initDb(); // 
         const { name, price, description, image, category_id } = req.body;
 
         await db.query(
