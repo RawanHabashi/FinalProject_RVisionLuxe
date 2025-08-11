@@ -1,0 +1,72 @@
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal {
+  background-color: #e1ad6d;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 400px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.modal h3 {
+  margin-bottom: 1.5rem;
+  color: #333;
+  font-size: 1.4rem;
+}
+
+.modal label {
+  display: block;
+  margin-top: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.modal form{ display: grid; gap: 10px; }
+
+
+.modal input {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.3rem;
+  border: 1px solid #cca91fd6;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.8rem;
+}
+
+.modal-actions button {
+  flex: 1;
+  margin: 0 5px;
+  padding: 0.6rem 0;
+  font-weight: bold;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.modal-actions button[type="submit"] {
+  background-color: #a67c52;
+  color: white;
+}
+
+.modal-actions button[type="button"] {
+  background-color: #e0e0e0;
+  color: #333;
+}

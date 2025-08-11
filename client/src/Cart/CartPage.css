@@ -1,0 +1,119 @@
+.cart-page {
+  padding: 20px;
+  background-color: #fff3e6;
+  min-height: 100vh;
+}
+
+.back-button {
+  display: block;
+  margin: 0 auto 20px;
+  background-color: #f1f1f1;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.cart-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 30px;
+}
+
+.empty-message {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #888;
+}
+
+.cart-items {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  gap: 20px;
+}
+
+.cart-item-image {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
+.cart-item-details {
+  flex: 1;
+}
+
+.remove-btn {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.remove-btn {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: fit-content;        /* ✅ לא לוקח את כל הרוחב */
+  align-self: center;        /* ✅ ממורכז בגובה התא */
+  white-space: nowrap;       /* ✅ מונע ירידת טקסט שורה */
+  flex-shrink: 0;            /* ✅ מונע ממנו להימתח */
+}
+
+
+/* ✅ סיכום עגלה מיושר למרכז */
+.cart-summary {
+  text-align: center;
+  margin-top: 40px;
+}
+
+/* ✅ טוטאל בולט באמצע */
+.cart-summary h3 {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* ✅ כפתור Checkout */
+.checkout-btn {
+  background-color: #333;
+  color: white;
+  border: none;
+  padding: 14px 30px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.checkout-btn:hover {
+  background-color: #555;
+}
+.cart-info-banner {
+  margin: 10px 0 20px;
+  padding: 10px 14px;
+  background: #fff7e8;
+  border: 1px solid #f1e0c7;
+  border-radius: 10px;
+  color: #5a4638;
+  text-align: center;
+  font-size: 14px;
+}

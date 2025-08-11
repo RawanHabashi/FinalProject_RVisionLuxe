@@ -1,0 +1,20 @@
+.modal-backdrop{
+  position: fixed; inset: 0; background: rgba(0,0,0,.35);
+  display: flex; align-items: center; justify-content: center; z-index: 1000;
+}
+.modal{
+  background:#fff; padding:20px; border-radius:14px;
+  width: 480px; max-width: 92%;
+  box-shadow:0 12px 30px rgba(0,0,0,.2);
+}
+.modal h3{ margin:0 0 12px; }
+.form-grid{ display:grid; gap:10px; }
+.form-grid label{ display:grid; gap:6px; font-size:14px; }
+.form-grid input{
+  border:1px solid #ddd; border-radius:8px; padding:10px 12px; font-size:14px;
+}
+.modal-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:6px; }
+.btn{ padding:10px 16px; border-radius:10px; border:none; cursor:pointer; }
+.btn-primary{ background:#c28d63; color:#fff; }
+.btn-ghost{ background:#eee; }
+.btn-ghost:hover{ background:#e2e2e2; }

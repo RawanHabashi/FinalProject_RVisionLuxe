@@ -1,0 +1,24 @@
+.admin-cats { padding: 16px; }
+.admin-cats-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.back-home-btn { background:#eee; border:none; padding:8px 12px; border-radius:10px; cursor:pointer; }
+.toolbar { margin: 10px 0 18px; }
+.add-btn { background:#c28d63; color:#fff; border:none; padding:10px 16px; border-radius:12px; cursor:pointer; }
+
+.grid {
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap:14px;
+}
+.card {
+  background:#fff; border-radius:14px; padding:10px;
+  box-shadow:0 4px 16px rgba(0,0,0,.08);
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+}
+.img-wrap { width:100%; height:140px; display:flex; align-items:center; justify-content:center; overflow:hidden; border-radius:12px; background:#faf6f2; }
+.img-wrap img { width:100%; height:100%; object-fit:cover; }
+.noimg { opacity:.6; font-size:14px; }
+
+.title { font-weight:700; }
+.actions { display:flex; gap:8px; }
+.actions .danger { background:#e25b5b; color:#fff; border:none; padding:6px 10px; border-radius:10px; cursor:pointer; }
+.actions .secondary { background:#4a4a4a; color:#fff; border:none; padding:6px 10px; border-radius:10px; cursor:pointer; }
