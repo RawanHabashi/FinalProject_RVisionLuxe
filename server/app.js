@@ -11,6 +11,7 @@ app.use(express.json());
 // ✅ טעינת נתיבים
 const userRoutes = require('./routes/users');
 const productRoutes = require('./routes/products');
+const categoryRoutes = require('./routes/categories');
 const orderRoutes = require('./routes/orders');
 const orderItemsRoutes = require('./routes/order_Items');
 const passwordRecoveryRoutes = require('./routes/password-recovery');
@@ -23,6 +24,7 @@ const adminRoutes = require('./routes/admin');
 // 🔄 שימוש בנתיבים
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/categories', categoryRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/order_Items', orderItemsRoutes);
 app.use('/api/password-recovery', passwordRecoveryRoutes);
@@ -35,6 +37,8 @@ app.use('/api/admin', adminRoutes);
 
 // ✅ הגשת תמונות מהנתיב הנכון (server/images)
 app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/uploads', express.static(path.join(__dirname, 'images', 'uploads')));
+
 
 console.log("✅ All routes loaded");
 
