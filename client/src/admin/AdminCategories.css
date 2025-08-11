@@ -22,3 +22,10 @@
 .actions { display:flex; gap:8px; }
 .actions .danger { background:#e25b5b; color:#fff; border:none; padding:6px 10px; border-radius:10px; cursor:pointer; }
 .actions .secondary { background:#4a4a4a; color:#fff; border:none; padding:6px 10px; border-radius:10px; cursor:pointer; }
+.title-row { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.badge-used {
+  background:#ffe6e6; color:#c03; border:1px solid #f5c2c2;
+  padding:2px 8px; border-radius:999px; font-size:12px; font-weight:600;
+}
+.card-used .img-wrap img { filter: grayscale(0.2); }
+.actions .danger[disabled] { opacity: .5; cursor: not-allowed; }

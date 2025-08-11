@@ -12,7 +12,6 @@ function OrdersInformation({ userId: userIdProp, onBack }) {
   useEffect(() => {
     // אם אין משתמש מחובר — לא ננסה להביא הזמנות
     if (!effectiveUserId) return;
-
     async function fetchOrders() {
       try {
         const res = await axios.get(`http://localhost:5000/api/orders/user/${effectiveUserId}`);
@@ -88,6 +87,71 @@ function OrdersInformation({ userId: userIdProp, onBack }) {
             <p><strong>Order ID:</strong> {order.order_id}</p>
             <p><strong>Date:</strong> {new Date(order.order_date).toLocaleString()}</p>
             <p><strong>Status:</strong> {order.status}</p>
+
+           {/* הצגת הפרטים של ההזמנה על המסך  */}
+           {Array.isArray(order.items) && order.items.length > 0 && (
+           <div className="order-items">
+           <table className="order-items-table" width="100%">
+          <thead>
+           <tr>
+          <th align="left">Product</th>
+          <th align="right">Qty</th>
+          <th align="right">Unit Price</th>
+          <th align="right">Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        {order.items.map((it, idx) => {
+          const qty = Number(it.quantity || 1);
+          const price = Number(it.price || 0);
+          const line = qty * price;
+          return (
+            <tr key={idx}>
+              <td>{it.name}</td>
+              <td align="right">{qty}</td>
+              <td align="right">{price.toFixed(2)} ₪</td>
+              <td align="right">{line.toFixed(2)} ₪</td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  </div>
+)}
+{/* חישובי סכומים להצגה */}
+{(() => {
+  const subTotal = (order.items || []).reduce((s, it) => {
+    const qty = Number(it.quantity || 1);
+    const price = Number(it.price || 0);
+    return s + qty * price;
+  }, 0);
+
+  const vatRate = 0.18;
+  const vat = +(subTotal * vatRate).toFixed(2);
+
+  const shipping = 30.00; // ⬅️ משלוח קבוע
+
+  const finalTotal = subTotal + vat + shipping;
+
+  return (
+    <div className="order-totals">
+      <hr />
+      <div className="totals-grid">
+        <div><strong>Subtotal:</strong></div>
+        <div>{subTotal.toFixed(2)} ₪</div>
+
+        <div><strong>VAT (18%):</strong></div>
+        <div>{vat.toFixed(2)} ₪</div>
+
+        <div><strong>🚚 Shipping:</strong></div>
+        <div>{shipping.toFixed(2)} ₪</div>
+
+        <div style={{ fontSize: 16 }}><strong>Final Total :</strong></div>
+        <div style={{ fontSize: 16 }}>{finalTotal.toFixed(2)} ₪</div>
+      </div>
+    </div>
+  );
+})()}
 
             <div className="order-status-bar">
               <div className="progress-line">

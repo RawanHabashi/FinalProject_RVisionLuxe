@@ -1,14 +1,18 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import api from "../api/axios";
 import EditProductModal from "./EditProductModal";
 import "./AdminProducts.css";
-// שימי לב: בשלב ראשון בלי המודאל. נוסיף אותו אחרי שמוודאים שאין לולאה.
 
 export default function AdminProducts({ onBack = () => {}, categoryId, categoryName }) {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);  // ← לשורת הסינון לפי קטגוריה
   const [editingProduct, setEditingProduct] = useState(null);
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState(null);
+
+  // חיפוש + סינון
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
 
   // טופס הוספה
   const [newProd, setNewProd] = useState({
@@ -22,43 +26,42 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
   const fileKeyRef = useRef(0); // לאפס שדה קובץ ב-UI
 
   // helper להצגת תמונה
- const API_HOST =
-  (api?.defaults?.baseURL || 'http://localhost:5000')
-    .replace(/\/api\/?$/, ''); // "http://localhost:5000"
+  const API_HOST =
+    (api?.defaults?.baseURL || "http://localhost:5000").replace(/\/api\/?$/, "");
 
-const getImageSrc = (img) => {
-  if (!img) return '';
+  const getImageSrc = (img) => {
+    if (!img) return "";
+    if (img.startsWith("http://") || img.startsWith("https://") || img.startsWith("/")) {
+      return img;
+    }
+    if (img.startsWith("uploads/") || img.startsWith("images/")) {
+      return `${API_HOST}/${img}`;
+    }
+    return `${API_HOST}/images/${img}`;
+  };
 
-  // אם כבר כתובת מוחלטת או מתחיל ב-/ – השאירי כמו שהוא
-  if (img.startsWith('http://') || img.startsWith('https://') || img.startsWith('/')) {
-    return img;
-  }
-
-  // אם נשמר מסלול יחסי ממסד (uploads/... או images/...)
-  if (img.startsWith('uploads/') || img.startsWith('images/')) {
-    return `${API_HOST}/${img}`;
-  }
-
-  // אם זה רק שם קובץ מה-D B (למשל "wallet2.jpg") – זה בתוך server/images
-  return `${API_HOST}/images/${img}`;
-};
-
-  // שליפה - בטוחה מלולאות
+  /* ===================== שליפות ===================== */
   useEffect(() => {
     let alive = true;
     (async () => {
       setLoading(true);
       setError(null);
       try {
-        let list;
-        if (categoryId) {
-          const all = await api.get("/products");
-          const data = Array.isArray(all.data) ? all.data : [];
-          list = data.filter((p) => Number(p.category_id) === Number(categoryId));
-        } else {
-          const res = await api.get("/products");
-          list = Array.isArray(res.data) ? res.data : [];
+        // מוצרים
+        const prodRes = await api.get("/products");
+        const allProducts = Array.isArray(prodRes.data) ? prodRes.data : [];
+        const list = categoryId
+          ? allProducts.filter((p) => Number(p.category_id) === Number(categoryId))
+          : allProducts;
+
+        // קטגוריות (לצורך הסינון)
+        try {
+          const catRes = await api.get("/categories");
+          if (alive) setCategories(Array.isArray(catRes.data) ? catRes.data : []);
+        } catch {
+          if (alive) setCategories([]);
         }
+
         if (alive) setProducts(list);
       } catch (e) {
         console.error("Failed to fetch products", e);
@@ -70,11 +73,12 @@ const getImageSrc = (img) => {
     return () => { alive = false; };
   }, [categoryId]);
 
-  // מחיקה
+  /* ===================== פעולות CRUD ===================== */
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this product?")) return;
     try {
       await api.delete(`/products/${id}`);
+
       // רענון
       const res = await api.get("/products");
       const list = Array.isArray(res.data) ? res.data : [];
@@ -86,7 +90,6 @@ const getImageSrc = (img) => {
     }
   };
 
-  // הוספה (URL או קובץ)
   const handleAdd = async (e) => {
     e.preventDefault();
     try {
@@ -130,46 +133,76 @@ const getImageSrc = (img) => {
       alert("❌ Add failed");
     }
   };
+
   const handleSaveEdit = async (payload, fileFromModal) => {
-  try {
-    let res;
-    const id = payload.product_id ?? payload.id;
+    try {
+      let res;
+      const id = payload.product_id ?? payload.id;
 
-    if (fileFromModal) {
-      // שליחה עם קובץ (multipart)
-      const fd = new FormData();
-      Object.entries(payload).forEach(([k, v]) => fd.append(k, v));
-      fd.append("image", fileFromModal);
-      res = await api.put(`/products/${id}`, fd); // axios מזהה FormData לבד
-    } else {
-      // עדכון JSON רגיל (אם image ריק, המודאל כבר מוחק את השדה כדי לא לדרוס)
-      res = await api.put(`/products/${id}`, payload);
+      if (fileFromModal) {
+        const fd = new FormData();
+        Object.entries(payload).forEach(([k, v]) => fd.append(k, v));
+        fd.append("image", fileFromModal);
+        res = await api.put(`/products/${id}`, fd);
+      } else {
+        res = await api.put(`/products/${id}`, payload);
+      }
+
+      if (res.status !== 200) throw new Error("Update failed");
+
+      setProducts(prev =>
+        prev.map(pr =>
+          (pr.product_id ?? pr.id) === id ? { ...pr, ...payload } : pr
+        )
+      );
+      setEditingProduct(null);
+      alert("✅ Product updated");
+    } catch (e) {
+      console.error("Update failed", e);
+      alert("❌ Update failed");
     }
+  };
 
-    if (res.status !== 200) throw new Error("Update failed");
+  /* ===================== סינון/חיפוש ===================== */
+  const filteredProducts = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
+    return (products || []).filter((p) => {
+      const byName = term ? (p.name || "").toLowerCase().includes(term) : true;
+      const byCat =
+        selectedCategory === "all"
+          ? true
+          : String(p.category_id) === String(selectedCategory);
+      return byName && byCat;
+    });
+  }, [products, searchTerm, selectedCategory]);
 
-    // עדכון מקומי של הרשימה בלי רענון מלא:
-    setProducts(prev =>
-      prev.map(pr =>
-        (pr.product_id ?? pr.id) === id
-          ? { ...pr, ...payload }   // נשמר גם price ו־description; אם השרת מחזיר image חדש – אפשר למשוך שוב או להשאיר כפי שהיה
-          : pr
-      )
-    );
-    setEditingProduct(null);
-    alert("✅ Product updated");
-  } catch (e) {
-    console.error("Update failed", e);
-    alert("❌ Update failed");
-  }
-};
-
-
+  /* ===================== UI ===================== */
   return (
     <div className="admin-products-container">
       <div className="admin-products-header">
         <h2>👜 Manage Products{categoryName ? ` in: ${categoryName}` : ""}</h2>
         <button className="back-home-btn" onClick={onBack}>← Back to Admin</button>
+      </div>
+
+      {/* פילטרים: קטגוריה + חיפוש בשם */}
+      <div className="filters-row">
+        <select
+     className="filter-select" value={selectedCategory}
+    onChange={(e) => setSelectedCategory(e.target.value)}>
+      <option value="all">All categories</option>
+     {categories.map((c) => (
+     <option key={c.category_id} value={c.category_id}>
+      {c.name}
+    </option>
+   ))}
+</select>
+        <input
+          className="search-input"
+          type="text"
+          placeholder="Search by product name…"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
       </div>
 
       {loading && <div className="loading">Loading products...</div>}
@@ -187,12 +220,12 @@ const getImageSrc = (img) => {
             </tr>
           </thead>
           <tbody>
-            {products.length === 0 ? (
+            {filteredProducts.length === 0 ? (
               <tr>
                 <td colSpan="5" style={{ textAlign: "center" }}>No products found.</td>
               </tr>
             ) : (
-              products.map((p, i) => {
+              filteredProducts.map((p, i) => {
                 const id = p.product_id ?? p.id;
                 const price = Number(p.price);
                 return (
@@ -206,10 +239,9 @@ const getImageSrc = (img) => {
                     </td>
                     <td>{p.name}</td>
                     <td>{p.description}</td>
-                    <td>{Number.isFinite(price) ? `${price.toFixed(0)}$` : "-"}</td>
+                    <td>{Number.isFinite(price) ? `${price.toFixed(0)}₪` : "-"}</td>
                     <td className="actions-cell">
-                      <button onClick={() => setEditingProduct(p)} // p = המוצר הנוכחי
-                        className="edit-btn"> Edit</button>
+                      <button onClick={() => setEditingProduct(p)} className="edit-btn">Edit</button>
                       <button className="delete-btn" onClick={() => handleDelete(id)}>Delete</button>
                     </td>
                   </tr>
@@ -224,16 +256,35 @@ const getImageSrc = (img) => {
         <h3>Add New Product{categoryName ? " to Category" : ""}</h3>
         <form onSubmit={handleAdd} className="add-product-form">
           <label>Product Name</label>
-          <input value={newProd.name} onChange={(e) => setNewProd({ ...newProd, name: e.target.value })} required />
+          <input
+            value={newProd.name}
+            onChange={(e) => setNewProd({ ...newProd, name: e.target.value })}
+            required
+          />
 
           <label>Description</label>
-          <input value={newProd.description} onChange={(e) => setNewProd({ ...newProd, description: e.target.value })} required />
+          <input
+            value={newProd.description}
+            onChange={(e) => setNewProd({ ...newProd, description: e.target.value })}
+            required
+          />
 
           <label>Price</label>
-          <input type="number" min="0" step="1" value={newProd.price} onChange={(e) => setNewProd({ ...newProd, price: e.target.value })} required />
+          <input
+            type="number"
+            min="0"
+            step="1"
+            value={newProd.price}
+            onChange={(e) => setNewProd({ ...newProd, price: e.target.value })}
+            required
+          />
 
           <label>Image URL (optional)</label>
-          <input value={newProd.image} onChange={(e) => setNewProd({ ...newProd, image: e.target.value })} placeholder="https://... or /uploads/file.jpg" />
+          <input
+            value={newProd.image}
+            onChange={(e) => setNewProd({ ...newProd, image: e.target.value })}
+            placeholder="https://... or /uploads/file.jpg"
+          />
 
           <label>Image Upload (optional)</label>
           <input
@@ -260,12 +311,14 @@ const getImageSrc = (img) => {
           <button type="submit" className="primary-btn">Add Product</button>
         </form>
       </div>
-      {editingProduct && (<EditProductModal
+
+      {editingProduct && (
+        <EditProductModal
           product={editingProduct}
-         onClose={() => setEditingProduct(null)}
-         onSave={handleSaveEdit}   
-  />
-)}
+          onClose={() => setEditingProduct(null)}
+          onSave={handleSaveEdit}
+        />
+      )}
     </div>
   );
 }

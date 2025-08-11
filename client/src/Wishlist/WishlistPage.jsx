@@ -68,7 +68,7 @@ export default function WishlistPage({ onBack, onAddToCart, currentUserId, onWis
               />
               <div className="wishlist-item-details">
                 <h3>{item.name}</h3>
-                <p>${Number(item.price).toFixed(2)}</p>
+                <p>₪{Number(item.price).toFixed(2)}</p>
               </div>
               <div className="wishlist-actions">
                 <button className="add-to-cart-btn" onClick={() => onAddToCart?.(item)}>

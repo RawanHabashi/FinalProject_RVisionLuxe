@@ -89,7 +89,7 @@ const ProductsPage = ({ onAddToCart, onBack, category, onWishlistChange, current
               />
               <h3>{product.name}</h3>
               <p>{product.description}</p>
-              <p><strong>${Number(product.price).toFixed(2)}</strong></p>
+              <p><strong>₪{Number(product.price).toFixed(2)}</strong></p>
               <div className="product-actions">
                 <button
                   onClick={() => toggleWishlist(product.product_id)}

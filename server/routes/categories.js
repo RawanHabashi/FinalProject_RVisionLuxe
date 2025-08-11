@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const multer = require('multer');
 const router = express.Router();
-const getDb = require('../config/dbSingleton'); 
+const getDb = require('../config/dbSingleton');
 
 // שמירת קבצים לתיקייה server/images/uploads
 const storage = multer.diskStorage({
@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// GET /api/categories
+/* ========= GET: כל הקטגוריות ========= */
 router.get('/', async (req, res) => {
   try {
     const db = await getDb();
@@ -33,7 +33,42 @@ router.get('/', async (req, res) => {
   }
 });
 
-// POST /api/categories  (JSON או multipart)
+/* ========= GET: מפה של שימוש בקטגוריות (לפי מוצרים) =========
+   מחזיר: [{category_id, count}] */
+router.get('/in-use-map', async (req, res) => {
+  try {
+    const db = await getDb();
+    const [rows] = await db.query(`
+      SELECT p.category_id, COUNT(*) AS count
+      FROM products p
+      GROUP BY p.category_id
+    `);
+    res.json(rows || []);
+  } catch (err) {
+    console.error('❌ categories/in-use-map error:', err.message);
+    res.status(500).json({ message: 'Usage map failed' });
+  }
+});
+
+/* ========= GET: בדיקת שימוש לקטגוריה אחת (לפי מוצרים) =========
+   מחזיר { inUse: boolean, count: number } */
+router.get('/:id/in-use', async (req, res) => {
+  try {
+    const db = await getDb();
+    const { id } = req.params;
+    const [rows] = await db.query(
+      'SELECT COUNT(*) AS cnt FROM products WHERE category_id = ?',
+      [id]
+    );
+    const count = rows?.[0]?.cnt ?? 0;
+    res.json({ inUse: count > 0, count });
+  } catch (err) {
+    console.error('❌ categories/:id/in-use error:', err.message);
+    res.status(500).json({ message: 'Usage check failed' });
+  }
+});
+
+/* ========= POST: יצירת קטגוריה (JSON או multipart) ========= */
 router.post('/', upload.single('image'), async (req, res) => {
   try {
     const db = await getDb();
@@ -55,7 +90,7 @@ router.post('/', upload.single('image'), async (req, res) => {
   }
 });
 
-// PUT /api/categories/:id  (JSON או multipart)
+/* ========= PUT: עדכון קטגוריה (JSON או multipart) ========= */
 router.put('/:id', upload.single('image'), async (req, res) => {
   try {
     const db = await getDb();
@@ -80,11 +115,21 @@ router.put('/:id', upload.single('image'), async (req, res) => {
   }
 });
 
-// DELETE /api/categories/:id
+/* ========= DELETE: מחיקת קטגוריה (נחסם אם יש מוצרים) ========= */
 router.delete('/:id', async (req, res) => {
   try {
     const db = await getDb();
     const { id } = req.params;
+
+    // חסימה אם קיימים מוצרים בקטגוריה
+    const [rows] = await db.query(
+      'SELECT COUNT(*) AS cnt FROM products WHERE category_id = ?',
+      [id]
+    );
+    if ((rows?.[0]?.cnt ?? 0) > 0) {
+      return res.status(409).json({ error: 'Category has products; cannot delete' });
+    }
+
     await db.query('DELETE FROM categories WHERE category_id=?', [id]);
     res.sendStatus(200);
   } catch (err) {

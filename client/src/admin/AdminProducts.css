@@ -1,210 +1,22 @@
-/* ===== עטיפת העמוד ===== */
-.admin-products-container {
-  max-width: 980px;                 /* רוחב עבודה נוח */
-  margin: 30px auto 50px;
-  padding: 0 14px;
-  background-color: #f5ebe3;        /* רקע בז' כמו בדשבורד */
-}
-
-/* ===== כותרת + חזרה ===== */
-.admin-products-header {
+/* מסגרת תמונה קבועה – בלי חיתוך */
+.img-wrap {
+  width: 100%;
+  height: 180px;            /* אפשר לשנות ל-200px אם את רוצה גבוה יותר */
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 18px;
-}
-
-.admin-products-header h2 {
-  margin: 0;
-  font-size: 28px;
-  font-weight: 800;
-  color: #5a3e2b;                   /* כותרת כהה כמו בתמונה */
-}
-
-/* כפתור חזרה – תואם למה שיש אצלך */
-.back-home-btn {
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: 1px solid #e4e4e7;
-  background: #fff;
-  cursor: pointer;
-  font-weight: 600;
-  transition: transform 0.05s ease, box-shadow 0.15s ease, background 0.15s ease;
-}
-.back-home-btn:hover {
-  background: #f7f7fb;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-}
-.back-home-btn:active { transform: translateY(1px); }
-
-/* ===== מצבי טעינה/שגיאה ===== */
-.loading,
-.error {
-  padding: 12px 14px;
-  border-radius: 10px;
-  font-weight: 600;
-  margin-bottom: 14px;
-  background: #fffaf4;
-  border: 1px solid #decbb5;
-  color: #7a5c45;
-}
-
-/* ===== טבלת מוצרים מעוצבת כמו "כרטיס רשימה" ===== */
-.admin-products-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
+  justify-content: center;
   overflow: hidden;
   border-radius: 12px;
-  background: #fffaf4;              /* רקע כרטיס */
-  border: 1px solid #decbb5;        /* מסגרת בהירה */
-  margin-bottom: 24px;
+  background: #faf6f2;
 }
 
-.admin-products-table thead th {
-  background: #f3e5d9;              /* פס עליון עדין */
-  color: #5a3e2b;
-  font-weight: 700;
-  font-size: 14px;
-  padding: 12px 14px;
-  text-align: left;
-  border-bottom: 1px solid #e7d7c6;
+/* התמונה נכנסת בשלמותה למסגרת, ממורכזת */
+.img-wrap img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;              /* חשוב: לא 100% */
+  height: auto;             /* חשוב: לא 100% */
+  object-fit: contain;
+  object-position: center;
+  display: block;           /* מונע רווחים לבנים מתחת לתמונה */
 }
-
-.admin-products-table tbody td {
-  padding: 14px;
-  vertical-align: middle;
-  color: #5a3e2b;
-  border-bottom: 1px solid #f0e3d7;
-}
-
-/* שורות מתחלפות עדינות */
-.admin-products-table tbody tr.even { background: #fffaf4; }
-.admin-products-table tbody tr.odd  { background: #fff4e8; }
-
-/* תמונת מוצר קטנה */
-.product-thumb {
-  width: 52px;
-  height: 52px;
-  object-fit: cover;
-  border-radius: 10px;
-  border: 1px solid #e7d7c6;
-  background: #fff;
-}
-
-/* תא פעולות + כפתורים כתומים */
-.actions-cell {
-  display: flex;
-  gap: 10px;
-}
-
-.edit-btn,
-.delete-btn {
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-weight: 700;
-  font-size: 0.95rem;
-  transition: transform 0.05s ease, box-shadow 0.15s ease, background 0.15s ease;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-  color: #fff;
-}
-
-.edit-btn   { background: #e7a36b; }   /* כתום בהיר – Edit */
-.edit-btn:hover { background: #d28a4e; }
-
-.delete-btn { background: #c96a4a; }   /* כתום אדמדם – Delete */
-.delete-btn:hover { background: #b4583a; }
-
-.edit-btn:active,
-.delete-btn:active { transform: translateY(1px); }
-
-/* ===== כרטיס טופס הוספת מוצר ===== */
-.add-product-card {
-  background: #fffaf4;
-  border: 1px solid #decbb5;
-  border-radius: 12px;
-  padding: 16px;
-}
-
-.add-product-card h3 {
-  margin: 0 0 12px 0;
-  color: #5a3e2b;
-  font-size: 20px;
-  font-weight: 800;
-}
-
-.add-product-form {
-  display: grid;
-  grid-template-columns: 1fr;   /* טור אחד – כמו בתמונה */
-  gap: 10px;
-}
-
-.add-product-form label {
-  font-weight: 700;
-  color: #7a5c45;
-  margin-top: 6px;
-}
-
-.add-product-form input {
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid #e7d7c6;
-  background: #fff;
-  outline: none;
-  color: #5a3e2b;
-  transition: box-shadow 0.15s ease, border-color 0.15s ease;
-}
-
-.add-product-form input:focus {
-  border-color: #d9bfa7;
-  box-shadow: 0 0 0 4px rgba(217,191,167,0.25);
-}
-
-/* כפתור הוספה – כתום */
-.primary-btn {
-  margin-top: 6px;
-  width: fit-content;
-  padding: 10px 16px;
-  border-radius: 10px;
-  border: none;
-  background: #e7a36b;
-  color: #fff;
-  font-weight: 800;
-  cursor: pointer;
-  transition: transform 0.05s ease, box-shadow 0.15s ease, background 0.15s ease;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
-}
-.primary-btn:hover  { background: #d28a4e; }
-.primary-btn:active { transform: translateY(1px); }
-
-/* ===== מובייל ===== */
-@media (max-width: 720px) {
-  .admin-products-header h2 { font-size: 22px; }
-  .admin-products-table thead { display: none; }  /* תצוגת כרטיסיות במובייל */
-  .admin-products-table tbody tr {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 8px;
-    padding: 12px 12px;
-  }
-  .admin-products-table tbody td {
-    border: none;
-    padding: 6px 0;
-  }
-  .actions-cell { margin-top: 6px; }
-}
-.modal-backdrop{
-  position: fixed; inset: 0; background: rgba(0,0,0,.35);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 1000;
-}
-.modal{
-  background: #fff; padding: 18px; border-radius: 12px;
-  width: 420px; max-width: 92%;
-  box-shadow: 0 10px 30px rgba(0,0,0,.2);
-}
-.modal-actions{ display:flex; gap:8px; justify-content:flex-end; margin-top:12px; }
-

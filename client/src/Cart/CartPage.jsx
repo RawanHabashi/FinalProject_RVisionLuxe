@@ -39,7 +39,7 @@ const CartPage = ({ items = [], onBack, onRemove, onCheckout }) => {
               />
               <div className="cart-item-details">
                 <h3>{item.name}</h3>
-                <p>${item.price} x {getQuantity(item)}</p>
+                <p>₪{item.price} x {getQuantity(item)}</p>
               </div>
               <button className="remove-btn" onClick={() => onRemove(item.name)}>
                 Remove
@@ -51,7 +51,7 @@ const CartPage = ({ items = [], onBack, onRemove, onCheckout }) => {
 
       {items.length > 0 && (
         <div className="cart-summary">
-          <h3>Total: ${total.toFixed(2)}</h3>
+          <h3>Total: ₪{total.toFixed(2)}</h3>
           <button className="checkout-btn" onClick={onCheckout}>
             Proceed to Checkout
           </button>

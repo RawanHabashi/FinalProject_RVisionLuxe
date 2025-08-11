@@ -133,7 +133,8 @@ function App() {
     localStorage.removeItem("user_id");
     setUsername(null);
     setCurrentUserId("guest"); 
-
+ 
+    //אם הלקוח אין לא חשבון(אורח) מאפסים הסל והמועדפים
      localStorage.removeItem("cart:guest");
      localStorage.removeItem("wishlist:guest");
 
