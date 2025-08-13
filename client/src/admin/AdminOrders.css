@@ -1,0 +1,187 @@
+
+/* ---- Theme vars ---- */
+:root{
+  --bg:#FFF6EA;                /* רקע בהיר */
+  --card:#ffffff;
+  --ink:#1d1d1f;
+  --muted:#737373;
+  --border:#eee;
+  --accent:#b8865a;            /* חום-זהוב עדין לכפתורים */
+  --accent-dark:#9a734c;
+
+  /* צבעי כותרת הטבלה (thead) */
+  --table-head-strong:#e3c2a3; /* חום נעים לכותרות */
+  --table-head-ink:#5a3a10;    /* טקסט חום כהה */
+  --table-head-border:#d9bfa6; /* קו תחתון רך */
+}
+
+/* ---- Page container ---- */
+.admin-orders{
+  padding:20px;
+  background:var(--bg);
+  min-height:100%;
+  color:var(--ink);
+  font-family:system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+/* ---- Header: centered title + back on the right ---- */
+.admin-orders-header{
+  position: relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;     /* מרכז את הכותרת */
+  gap:12px;
+  margin-bottom:22px;          /* רווח לפני סרגל הסינון */
+}
+
+.admin-orders-header .title{
+  margin:0;
+  font-size:28px;
+  font-weight:700;
+  text-align:center;
+}
+
+/* כפתור חזרה קטן בצד ימין י) */
+.orders-back-btn{
+  position:absolute;
+  right:0;
+  top:50%;
+  transform: translateY(-50%);
+  display:inline-flex !important;
+  align-items:center;
+  gap:6px;
+  width:auto !important;
+  max-width:max-content;
+  white-space:nowrap;
+
+  /* סטייל תואם לשאר המערכת */
+  background:#f7efe6;
+  border:1px solid #d9bfa6;
+  color:#b16b2f;
+  padding:10px 14px;
+  border-radius:10px;
+  font-weight:700;
+  cursor:pointer;
+  box-shadow:0 3px 10px rgba(0,0,0,.06);
+}
+.orders-back-btn:hover{ background:#f0e5da; }
+
+/* אם נשאר פס חזרה ישן – מסתירים */
+.admin-backbar, .backbar-btn { display: none !important; }
+
+/* ---- Filters (search + status) ---- */
+.admin-orders .filters{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:14px 0 18px;          /* ריווח תקין בין הכותרת לטבלה */
+  width:100%;
+}
+.admin-orders .filters input{
+  flex:1;                      /* תופס את כל הרוחב הפנוי */
+  min-width:260px;
+  padding:10px 12px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:#fff;
+  font-size:14px;
+}
+.admin-orders .filters select{
+  min-width:240px;
+  padding:10px 12px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:#fff;
+  font-size:14px;
+}
+/* אם נשאר כפתור "Search" בקוד – מסתירים */
+.admin-orders .filters button{ display:none !important; }
+
+.error{ color:#b00020; margin:6px 0; }
+.loading{ padding:24px; }
+
+/* ---- Table ---- */
+.table-wrap{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:auto;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+}
+
+/* טבלה */
+.orders-table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+}
+
+/* כותרת הטבלה – חום נעים וקריא */
+.orders-table thead th{
+  position:sticky; top:0; z-index:1;
+  background:var(--table-head-strong);
+  color:var(--table-head-ink);
+  text-align:left;
+  font-weight:700;
+  padding:12px;
+  border-bottom:1px solid var(--table-head-border);
+}
+
+/* תאי גוף הטבלה */
+.orders-table td{
+  padding:12px;
+  border-bottom:1px solid var(--border);
+  vertical-align:middle;
+}
+
+/* ריחוף שורה */
+.orders-table tbody tr:hover{ background:#fffdf9; }
+
+/* numeric / align helpers */
+.num{ text-align:right; font-variant-numeric: tabular-nums; }
+.right{ text-align:right; }
+.center{ text-align:center; }
+
+/* לוודא שגם ה-TH וגם ה-TD המספריים מיושרים לאותו צד */
+.orders-table th.num,
+.orders-table td.num{
+  text-align: right !important;
+  font-variant-numeric: tabular-nums;
+}
+
+/* פקדים בתוך הטבלה */
+.orders-table select{
+  padding:8px 10px;
+  border:1px solid var(--border);
+  border-radius:8px;
+  background:#fff;
+  min-width:180px;
+}
+.orders-table button{
+  padding:8px 12px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  background:var(--accent);
+  color:#fff;
+  font-weight:600;
+}
+.orders-table button:hover{ background:var(--accent-dark); }
+
+/* אין פאג'ינציה – מציגים הכל בעמוד אחד */
+.admin-orders .pagination{ display:none !important; }
+
+/* ---- Responsive ---- */
+@media (max-width: 900px){
+  .admin-orders .filters{
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .admin-orders .filters input,
+  .admin-orders .filters select{
+    width:100%;
+  }
+  /* מסתיר עמודת אימייל במסכים צרים לטובת מקום  */
+  .orders-table thead th:nth-child(3),
+  .orders-table tbody td:nth-child(3){ display:none; }
+}

@@ -8,6 +8,7 @@ import WishlistPage from "./Wishlist/WishlistPage";
 import AdminDashboard from './admin/AdminDashboard';
 import AdminUserTable from "./admin/AdminUserTable";
 import AdminProducts from "./admin/AdminProducts";
+import AdminOrders from "./admin/AdminOrders";
 import AdminCategories from "./admin/AdminCategories";
 import ProductsPage from './products/ProductsPage';
 import SearchPage from './Search/SearchPage';
@@ -255,6 +256,7 @@ function App() {
           onManageUsers={() => goTo("adminUsers")} // ← כפתור Manage Users יעביר לכאן
           onManageProducts={() => goTo("adminProducts")}
           onManageCategories={() => goTo("adminCategories")}
+          onManageOrders={() => goTo("adminOrders")}
         />
       )}
 
@@ -271,6 +273,10 @@ function App() {
     {view === "adminCategories" && (
   <AdminCategories onBack={() => goTo("admin")} />
 )}
+
+  {view === "adminOrders" && (
+  <AdminOrders onBack={() => goTo("admin")} />
+ )}
 
 
       {toast.show && (

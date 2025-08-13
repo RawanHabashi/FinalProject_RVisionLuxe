@@ -1,4 +1,3 @@
-// src/admin/AdminDashboard.jsx
 // דף הדשבורד של אדמין
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -10,6 +9,7 @@ export default function AdminDashboard({
   onManageUsers = () => {},
   onManageProducts = () => {},
   onManageCategories = () => {},
+   onManageOrders = () => {},
 }) {
   const [stats, setStats] = useState({
     users: 0,
@@ -65,6 +65,7 @@ export default function AdminDashboard({
         <button onClick={onManageUsers}>👥 Manage Users</button>
         <button onClick={onManageProducts}>👜 Manage Products</button>
         <button onClick={onManageCategories}>📁 Manage Categories</button>
+         <button onClick={onManageOrders}>📦 Manage Orders</button>
         <button onClick={onBack}>🏠 Back to Home</button>
       </div>
     </div>

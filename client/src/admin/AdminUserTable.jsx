@@ -63,11 +63,10 @@ const AdminUserTable = ({ onBack }) => {
 
   return (
     <div className="admin-table-container">
-      <div className="admin-table-header">
-        <h2>👤 User Management</h2>
-        {/* כפתור חזרה יוצג רק אם onBack קיים */}
+      <div className="admin-users-header">
+        <h2 className="title"> User Management👤</h2>
         {typeof onBack === 'function' && (
-          <button className="back-home-btn" onClick={onBack}>← Back to Admin</button>
+          <button className="back-home-btn" onClick={onBack}> Back to Admin</button>
         )}
       </div>
 

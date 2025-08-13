@@ -1,22 +1,157 @@
-/* מסגרת תמונה קבועה – בלי חיתוך */
-.img-wrap {
-  width: 100%;
-  height: 180px;            /* אפשר לשנות ל-200px אם את רוצה גבוה יותר */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  border-radius: 12px;
-  background: #faf6f2;
+/* עטיפה כללית + מרכז מסך */
+.admin-products-container{
+  padding:18px 20px;
+  background:#faefe0;
+  min-height:100%;
+  max-width:1200px;
+  margin:0 auto;
+  box-sizing:border-box;
 }
 
-/* התמונה נכנסת בשלמותה למסגרת, ממורכזת */
-.img-wrap img {
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;              /* חשוב: לא 100% */
-  height: auto;             /* חשוב: לא 100% */
-  object-fit: contain;
-  object-position: center;
-  display: block;           /* מונע רווחים לבנים מתחת לתמונה */
+/* כותרת ועליונות */
+.admin-products-header{
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;   /* הכותרת באמצע */
+  gap: 12px;
+  margin-bottom: 22px;       /* רווח לפני הפילטרים */
 }
+.admin-products-header h2{
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+}
+.back-home-btn{
+  background:#f7efe6; border:1px solid #d9bfa6; color:#b16b2f;
+  padding:8px 12px; border-radius:10px; cursor:pointer;
+}
+.back-home-btn:hover{ background:#f0e5da; }
+
+/* שורת פילטרים */
+.filters-row{
+  display:grid;
+  grid-template-columns:240px 1fr;
+  gap:10px;
+  margin-bottom:12px;
+}
+.filter-select,.search-input{
+  width:100%; padding:10px 12px; border:1px solid #d9bfa6; border-radius:10px;
+  background:#fff;
+}
+
+/* טבלה */
+.admin-products-table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  table-layout:fixed;
+  background:#fff;
+  border:1px solid #ead8c6;
+  border-radius:14px;
+  overflow:hidden;
+}
+
+/* כותרת טבלה דביקה */
+.admin-products-table thead th{
+  position:sticky; top:0; z-index:1;
+  background:#fff6ec;
+  border-bottom:1px solid #ead8c6;
+  font-weight:600;
+}
+
+/* תאים */
+.admin-products-table th,
+.admin-products-table td{
+  padding:14px 12px;
+  border-bottom:1px solid #f3e6d8;
+  vertical-align:middle;           /* ברירת מחדל – אמצע אנכי */
+}
+.admin-products-header .back-home-btn{
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: auto;               /* לא תופס רוחב מלא */
+  white-space: nowrap;
+  background: #f7efe6;
+  border: 1px solid #d9bfa6;
+  color: #b16b2f;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0,0,0,.05);
+}
+.admin-products-header .back-home-btn:hover{
+  background:#e0daf0;
+}
+
+/* זברה + ריחוף */
+.admin-products-table tr.even{ background:#fff; }
+.admin-products-table tr.odd { background:#fffaf3; }
+.admin-products-table tbody tr:hover{ background:#fff4e6; }
+
+/* רוחבי עמודות */
+.admin-products-table th:nth-child(1),
+.admin-products-table td:nth-child(1){ width:160px; }                 /* Image */
+.admin-products-table th:nth-child(4),
+.admin-products-table td:nth-child(4){ width:120px; }                 /* Price */
+.admin-products-table th:nth-child(5),
+.admin-products-table td:nth-child(5){ width:170px; }                 /* Actions */
+
+/* תמונה ממוסגרת ומוקטנת */
+.product-thumb{
+  width:140px; height:140px; display:block; margin:0 auto;
+  object-fit:contain; background:#faf6f2; border-radius:12px;
+}
+
+/* Price – באותו קו של הכפתורים, ימין וללא שבירה */
+.admin-products-table td.price {
+  text-align: center;       
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Actions – כפתורים אחד מעל השני, ממורכזים תחת הכותרת */
+.actions-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;    /* מצמיד לימין */
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+  padding-right: 20px;      /* קצת מרווח מהקצה */
+}
+
+/* כפתורים */
+.edit-btn,.delete-btn,.primary-btn{
+  border:none; padding:9px 14px; border-radius:10px; cursor:pointer;
+  display:inline-flex; align-items:center; justify-content:center;
+}
+.edit-btn{ background:#c9c2f0; color:#2d2a48; }
+.edit-btn:hover{ filter:brightness(0.95); }
+.delete-btn{ background:#ffc885; color:#5a3a10; }
+.delete-btn:hover{ filter:brightness(0.95); }
+
+/* כרטיס הוספה */
+.add-product-card{
+  margin-top:18px; background:#fff; border-radius:14px; padding:16px;
+  border:1px solid #ead8c6;
+}
+.add-product-form{ display:grid; grid-template-columns:1fr; gap:10px; }
+.primary-btn{ background:#79c08a; color:#fff; }
+.primary-btn:hover{ filter:brightness(0.95); }
+
+/* רספונסיבי */
+@media (max-width:900px){
+  .filters-row{ grid-template-columns:1fr; }
+  .admin-products-table th:nth-child(1),
+  .admin-products-table td:nth-child(1){ width:120px; }
+  .product-thumb{ width:100px; height:100px; }
+  .admin-products-table th:nth-child(5),
+  .admin-products-table td:nth-child(5){ width:auto; }
+}
+.admin-products-container .admin-backbar,
+.admin-products-container .backbar,
+.admin-products-container .back-full { display:none !important; }

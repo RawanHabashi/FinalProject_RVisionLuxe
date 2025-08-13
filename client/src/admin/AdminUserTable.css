@@ -1,78 +1,124 @@
-/* מיכל כללי */
-.admin-table-container {
-  padding: 2rem;
-  background-color: #fef6e4;
-  min-height: 100vh;
-  font-family: 'Segoe UI', sans-serif;
+/* ========= Wrapper ========= */
+.admin-table-container{
+  padding: 24px;
+  background: #fef6e4;     /* קרם עדין כמו בשאר מסכי האדמין */
+  min-height: 100%;
+  font-family: "Segoe UI", Arial, sans-serif;
 }
 
-/* כותרת */
-.admin-table-container h2 {
-  margin-bottom: 1.5rem;
-  font-size: 2rem;
+/* ========= Header: כותרת ממורכזת + כפתור חזרה בצד ימין ========= */
+.admin-users-header{
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;   /* מרכז את הכותרת */
+  gap: 12px;
+  margin: 6px 0 18px;        /* רווח קטן לפני הטבלה */
+}
+
+.admin-users-header .title{
+  margin: 0;
+  font-size: 2rem;           /* ~32px */
+  line-height: 1.2;
   color: #333;
+  text-align: center;
 }
 
-/* טבלה כללית */
-.admin-user-table {
+/* כפתור חזרה קטן מימין בשורה של הכותרת */
+.admin-users-header .back-home-btn{
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: auto;               /* שלא יתפוס רוחב מלא */
+  white-space: nowrap;
+  background: #f7efe6;
+  border: 1px solid #d9bfa6;
+  color: #b16b2f;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0,0,0,.05);
+  font-weight: 600;
+}
+.admin-users-header .back-home-btn:hover{
+  background: #f0e5da;
+}
+
+/* אם נשאר אצלך פס חזרה ברוחב מלא ממשקים ישנים – מסתירים */
+.admin-table-container .admin-backbar,
+.admin-table-container .backbar,
+.admin-table-container .back-full { display: none !important; }
+
+/* רספונסיבי לכותרת/כפתור */
+@media (max-width: 600px){
+  .admin-users-header{ justify-content: space-between; }
+  .admin-users-header .title{ font-size: 1.6rem; }
+  .admin-users-header .back-home-btn{
+    position: static;
+    transform: none;
+    margin-left: auto;        /* נשאר מימין אך לא absolute */
+  }
+}
+
+/* ========= Users Table ========= */
+.admin-user-table{
   width: 100%;
   border-collapse: collapse;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  background-color: white;
-  border-radius: 8px;
-  overflow: hidden;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;           /* פינות עגולות גם לכותרת */
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
 }
 
 /* כותרת הטבלה */
-.admin-user-table thead {
-  background-color: #d4a373;
-  color: white;
+.admin-user-table thead{
+  background: #d4a373;       /* חום-זהוב עדין */
+  color: #fff;
 }
-
 .admin-user-table th,
-.admin-user-table td {
-  padding: 1rem;
+.admin-user-table td{
+  padding: 14px 12px;
   text-align: left;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #e9e1d7;
+  vertical-align: middle;     /* שהכל יהיה באותו קו */
 }
 
-/* שורות מתחלפות */
-.admin-user-table tr.even {
-  background-color: #f9f9f9;
+/* שורות זברה */
+.admin-user-table tr.even{ background: #f9f9f9; }
+.admin-user-table tr.odd { background: #fff; }
+
+/* תא פעולות לימין וללא שבירת שורה */
+.admin-user-table td.actions{
+  text-align: right;
+  white-space: nowrap;
 }
 
-.admin-user-table tr.odd {
-  background-color: #fff;
-}
-
-/* כפתורי פעולה */
+/* ========= Buttons ========= */
 .edit-btn,
-.delete-btn {
-  padding: 0.4rem 0.8rem;
-  margin-right: 0.5rem;
+.delete-btn{
   border: none;
-  border-radius: 6px;
+  padding: 8px 12px;
+  border-radius: 8px;
   cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.2s ease;
+  font-weight: 600;
+  transition: filter .15s ease, background-color .15s ease;
+  margin-right: 8px;
 }
 
-/* עריכה */
-.edit-btn {
-  background-color: #afacea;
-  color: white;
+.edit-btn{
+  background: #afacea;
+  color: #fff;
 }
+.edit-btn:hover{ filter: brightness(.95); }
 
-.edit-btn:hover {
-  background-color: #c0bce3;
+.delete-btn{
+  background: #ffc66b;
+  color: #5a3a10;
 }
+.delete-btn:hover{ filter: brightness(.95); }
 
-/* מחיקה */
-.delete-btn {
-  background-color: #ffc66b;
-  color: white;
-}
-
-.delete-btn:hover {
-  background-color: #e0b548;
+/* רספונסיבי לטבלה בסיסית */
+@media (max-width: 900px){
+  .admin-user-table th, .admin-user-table td{ padding: 12px 10px; }
 }

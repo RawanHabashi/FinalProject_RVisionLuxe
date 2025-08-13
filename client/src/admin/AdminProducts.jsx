@@ -180,8 +180,8 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
   return (
     <div className="admin-products-container">
       <div className="admin-products-header">
-        <h2>👜 Manage Products{categoryName ? ` in: ${categoryName}` : ""}</h2>
-        <button className="back-home-btn" onClick={onBack}>← Back to Admin</button>
+        <h2> Product Management👜{categoryName ? ` in: ${categoryName}` : ""}</h2>
+        <button className="back-home-btn" onClick={onBack}> Back to Admin</button>
       </div>
 
       {/* פילטרים: קטגוריה + חיפוש בשם */}
@@ -239,7 +239,9 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
                     </td>
                     <td>{p.name}</td>
                     <td>{p.description}</td>
-                    <td>{Number.isFinite(price) ? `${price.toFixed(0)}₪` : "-"}</td>
+                    <td className="price">
+                   {Number.isFinite(price) ? `${price.toFixed(0)}₪` : "-"}
+                  </td>
                     <td className="actions-cell">
                       <button onClick={() => setEditingProduct(p)} className="edit-btn">Edit</button>
                       <button className="delete-btn" onClick={() => handleDelete(id)}>Delete</button>

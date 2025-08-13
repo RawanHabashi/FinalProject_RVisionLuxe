@@ -115,8 +115,8 @@ export default function AdminCategories({ onBack = () => {} }) {
   return (
     <div className="admin-cats">
       <div className="admin-cats-header">
-        <h2>🗂️ Category management</h2>
-        <button className="back-home-btn" onClick={onBack}>← Back to Admin</button>
+        <h2 className="cats-title"> Category Management🗂️</h2>
+        <button className="cats-back-btn"  onClick={onBack}> Back to Admin</button>
       </div>
 
       <div className="toolbar">
