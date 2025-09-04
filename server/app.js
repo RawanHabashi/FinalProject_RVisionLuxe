@@ -19,7 +19,8 @@ const verifyCodeRoutes = require('./routes/verify-code');
 const resetPasswordRoutes = require('./routes/reset-password');
 const contactRoutes = require('./routes/contact');
 const adminRoutes = require('./routes/admin');
-
+const settingsRoutes = require('./routes/settings');
+const inventoryRoutes=require('./routes/inventory')
 
 // 🔄 שימוש בנתיבים
 app.use('/api/users', userRoutes);
@@ -32,6 +33,9 @@ app.use('/api/verify-code', verifyCodeRoutes);
 app.use('/api/reset-password', resetPasswordRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/settings', settingsRoutes);
+app.use('/api/inventory', inventoryRoutes);
+
 
 
 

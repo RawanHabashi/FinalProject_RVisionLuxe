@@ -103,17 +103,17 @@ const CheckoutPage = ({ items = [], onBack, onOrderPlaced }) => {
             <tr key={index}>
               <td>{item.name}</td>
               <td>x {item.quantity || 1}</td>
-              <td>{item.price * (item.quantity || 1)}$</td>
+              <td>{item.price * (item.quantity || 1)}₪</td>
             </tr>
           ))}
         </tbody>
       </table>
       <div className="layout-wrapper">
         <div className="summary-totals">
-          <p>💼 Amount for all bags: {subtotal.toFixed(2)}$</p>
-          <p>👜 VAT (18%): {vat.toFixed(2)}$</p>
-          <p>🚚 Shipping: {SHIPPING}$</p>
-          <h3>✅ Total: {total.toFixed(2)}$</h3>
+          <p>💼 Amount for all bags: {subtotal.toFixed(2)}₪</p>
+          <p>👜 VAT (18%): {vat.toFixed(2)}₪</p>
+          <p>🚚 Shipping: {SHIPPING}₪</p>
+          <h3>✅ Total: {total.toFixed(2)}₪</h3>
         </div>
 
         <form className="payment-form" onSubmit={handleSubmit}>

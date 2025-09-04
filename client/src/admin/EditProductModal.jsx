@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 // מודאל עריכת מוצר
    // אם נבחר קובץ חדש: ההורה ישלח multipart
    // אחרת: ההורה ישלח JSON, ו-image (אם מולא) יישמר כ-URL/שם קובץ
@@ -12,7 +11,7 @@ const EditProductModal = ({ product, onClose, onSave }) => {
     image: product?.image ?? "",              // URL/שם קובץ קיים
     category_id: product?.category_id ?? "",
   });
-  const [file, setFile] = useState(null);     // קובץ חדש (אופציונלי)
+  const [file, setFile] = useState(null);     //קובץ חדש
 
   // סגירה ב-Esc
   useEffect(() => {

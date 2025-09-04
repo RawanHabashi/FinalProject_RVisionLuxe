@@ -1,0 +1,19 @@
+.inv-snap { margin-top:16px; background:#fff; border-radius:16px; padding:16px; box-shadow:0 8px 18px rgba(0,0,0,.06); }
+.inv-snap-header { display:flex; justify-content:space-between; align-items:center; }
+.inv-snap-header h3 { margin:0; color:#5b3e2b; }
+.manage-btn { padding:8px 12px; border:none; border-radius:10px; background:linear-gradient(#b98669,#a07155); color:#fff; cursor:pointer; }
+
+.inv-snap-kpis { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:12px; }
+.kpi { background:#fffaf5; border:1px solid #e7dcd1; border-radius:12px; padding:12px; text-align:center; }
+.kpi-title { color:#6a4a36; font-size:14px; }
+.kpi-value { font-size:22px; font-weight:700; color:#5b3e2b; }
+
+.inv-snap-table { margin-top:14px; }
+.table-title { color:#6a4a36; margin-bottom:6px; }
+.inv-snap-table table { width:100%; border-collapse:collapse; }
+.inv-snap-table th, .inv-snap-table td { padding:8px 10px; border-bottom:1px solid #f0e7df; text-align:left; }
+.row-low { background:#fff7e6; }
+.row-out { background:#fdeaea; }
+.quick button { margin-right:6px; padding:4px 8px; border:none; border-radius:8px; background:#ead7c6; color:#5b3e2b; cursor:pointer; }
+.quick button:last-child { margin-right:0; }
+.loading, .empty { padding:8px; color:#6a4a36; }

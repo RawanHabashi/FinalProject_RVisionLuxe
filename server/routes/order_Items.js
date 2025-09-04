@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const initDb = require('../config/dbSingleton'); // Use initDb function
+const initDb = require('../config/dbSingleton'); 
 
 // Get all order items
 router.get('/', async (req, res) => {
     try {
-        const db = await initDb(); // Create DB connection
+        const db = await initDb(); 
         const [items] = await db.query('SELECT * FROM order_items');
         res.json(items);
     } catch (err) {

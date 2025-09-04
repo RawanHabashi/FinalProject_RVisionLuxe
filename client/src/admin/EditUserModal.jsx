@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import './EditUserModal.css';
-
 // טופס עדכון משתמש
   // לא טוען סיסמה קיימת (מונע דריסה בלי כוונה)
    // אם הסיסמה נשארת ריקה, לא נשלח אותה בעדכון

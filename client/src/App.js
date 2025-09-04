@@ -10,6 +10,7 @@ import AdminUserTable from "./admin/AdminUserTable";
 import AdminProducts from "./admin/AdminProducts";
 import AdminOrders from "./admin/AdminOrders";
 import AdminCategories from "./admin/AdminCategories";
+import AdminInventoryPage from './admin/AdminInventoryPage';
 import ProductsPage from './products/ProductsPage';
 import SearchPage from './Search/SearchPage';
 import ContactUs from "./ContactUs/ContactUsPage";
@@ -199,7 +200,7 @@ function App() {
           currentUserId={currentUserId} // נעביר כדי לעדכן מפתחות שם
         />
       )}
-
+ 
       {view === "cart" && (
         <CartPage
           items={cartItems}
@@ -257,6 +258,7 @@ function App() {
           onManageProducts={() => goTo("adminProducts")}
           onManageCategories={() => goTo("adminCategories")}
           onManageOrders={() => goTo("adminOrders")}
+          onManageInventory={() => goTo("adminInventory")} 
         />
       )}
 
@@ -272,6 +274,10 @@ function App() {
 )}
     {view === "adminCategories" && (
   <AdminCategories onBack={() => goTo("admin")} />
+)}
+
+   {view === "adminInventory" && (
+  <AdminInventoryPage onBack={() => goTo("admin")} />
 )}
 
   {view === "adminOrders" && (

@@ -2,10 +2,10 @@ import React, { useEffect, useMemo, useState } from "react";
 import api from "../api/axios";
 import CategoryModal from "./CategoryModal";
 import "./AdminCategories.css";
-
+//ניהטל כטגוריות
 export default function AdminCategories({ onBack = () => {} }) {
   const [categories, setCategories] = useState([]);
-  const [usageMap, setUsageMap] = useState({}); // { [category_id]: count of products }
+  const [usageMap, setUsageMap] = useState({}); 
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState(null);
 

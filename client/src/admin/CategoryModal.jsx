@@ -4,9 +4,9 @@ export default function CategoryModal({ mode = "add", category, onSave, onClose 
   const [form, setForm] = useState({
     category_id: category?.category_id ?? category?.id ?? null,
     name: category?.name ?? "",
-    image: category?.image ?? "",   // URL/שם קובץ קיים (אופציונלי)
+    image: category?.image ?? "",   
   });
-  const [file, setFile] = useState(null);     // קובץ חדש (אופציונלי)
+  const [file, setFile] = useState(null);     
 
   // סגירה ב-Esc
   useEffect(() => {
@@ -19,8 +19,8 @@ export default function CategoryModal({ mode = "add", category, onSave, onClose 
     e.preventDefault();
     const payload = { ...form };
     if (!payload.name?.trim()) { alert("Name is required"); return; }
-    if (!payload.category_id) delete payload.category_id; // במצב add אין id
-    if (!payload.image?.trim()) delete payload.image;     // שלא ידרוס בטעות
+    if (!payload.category_id) delete payload.category_id; 
+    if (!payload.image?.trim()) delete payload.image;     
     onSave?.(payload, file);
   };
 

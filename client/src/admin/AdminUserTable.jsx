@@ -2,18 +2,15 @@ import React, { useEffect, useState } from 'react';
 import api from '../api/axios';
 import EditUserModal from './EditUserModal';
 import './AdminUserTable.css';
-
 // טבלת ניהול משתמשים
    // תצוגה, עריכה ומחיקה
    // אחידות מזהה על user_id (עם גיבוי ל-id)
    // כפתור חזרה לדשבורד אדמין דרך onBack (אם סופק)
-
 const AdminUserTable = ({ onBack }) => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null); // משתמש לעריכה
   const [loading, setLoading] = useState(true);           // מצב טעינה
   const [error, setError] = useState(null);               // הודעת שגיאה
-
   // שליפת משתמשים מהשרת
   const fetchUsers = async () => {
     setLoading(true);

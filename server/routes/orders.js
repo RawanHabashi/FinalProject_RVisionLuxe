@@ -19,9 +19,20 @@ const ALLOWED_STATUSES = [
   'Delivered'
 ];
 
-/* ============================================================================
-   Orders API
-   ==========================================================================*/
+// --- VAT helper: read % from settings (returns integer like 18) ---
+async function getCurrentVatPercent(db) {
+  try {
+    const [rows] = await db.query(
+      'SELECT `value` FROM settings WHERE `key`="vat_percent" LIMIT 1'
+    );
+    const n = Number(rows?.[0]?.value);
+    return Number.isFinite(n) ? n : 18;
+  } catch {
+    return 18;
+  }
+}
+
+   //Orders API
 
 // ✅ שליפת כל ההזמנות של משתמש מסוים לפי user_id (עם פריטים)
 router.get('/user/:user_id', async (req, res) => {
@@ -156,18 +167,30 @@ router.get('/invoice/:orderId', async (req, res) => {
       WHERE oi.order_id = ?
     `, [orderId]);
 
-    // 3) קבועים וחישובים
-    const VAT_RATE = 0.18; // 18% מע"מ
-    const SHIPPING = 30;   // עלות משלוח
+    // 3) חישובים דינמיים לפי DB
+// א. מע"מ: אם קיים בעמודת ההזמנה (orders.vat_percent) – נשתמש בו,
+// אחרת נקרא את הערך הנוכחי מה-settings (שומר היסטוריות נכונה לחשבוניות ישנות).
+let vatPercent;
+if (order.vat_percent != null) {
+  vatPercent = Number(order.vat_percent);      
+} else {
+  vatPercent = await getCurrentVatPercent(db); 
+}
+const VAT_DEC = (Number(vatPercent) || 0) / 100;
 
-    let subtotal = 0;
-    products.forEach(p => {
-      const price = Number(p.price) || 0;
-      const qty   = Number(p.quantity) || 1;
-      subtotal += price * qty;
-    });
-    const vatAmount  = Number((subtotal * VAT_RATE).toFixed(2));
-    const finalTotal = Number((subtotal + vatAmount + SHIPPING).toFixed(2));
+// ב. משלוח: אם יש עמודה בהזמנה – השתמש בה, אחרת ברירת מחדל 30
+const SHIPPING = order.shipping != null ? Number(order.shipping) : 30;
+
+// ג. subtotal מהפריטים
+let subtotal = 0;
+products.forEach(p => {
+  const price = Number(p.price) || 0;
+  const qty   = Number(p.quantity) || 1;
+  subtotal += price * qty;
+});
+
+const vatAmount  = Number((subtotal * VAT_DEC).toFixed(2));
+const finalTotal = Number((subtotal + vatAmount + SHIPPING).toFixed(2));
 
     // 4) יצירת PDF
     res.setHeader('Content-Disposition', `attachment; filename=invoice_${orderId}.pdf`);
@@ -243,7 +266,7 @@ router.get('/invoice/:orderId', async (req, res) => {
     };
 
     right('Subtotal', subtotal);
-    right(`VAT (${(VAT_RATE * 100).toFixed(0)}%)`, vatAmount);
+    right(`VAT (${vatPercent.toFixed(0)}%)`, vatAmount);
     right('Shipping', SHIPPING);
     doc.moveDown(0.5);
     right('Final Total', finalTotal, true);

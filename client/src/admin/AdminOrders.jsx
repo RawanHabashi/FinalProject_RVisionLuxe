@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import api from "../api/axios";
 import "./AdminOrders.css";
-
+//ניהול הזמנות
 const STATUS_OPTIONS = ["Pending","Processing","Ready for Shipment","In Transit","Delivered"];
-
-// פורמט ₪
 const formatILS = (val) =>
   new Intl.NumberFormat("he-IL", { style: "currency", currency: "ILS", minimumFractionDigits: 2 })
     .format(Number(val || 0));
@@ -80,7 +78,7 @@ export default function AdminOrders({ onBack = () => {} }) {
      <button className="orders-back-btn" onClick={onBack}> Back to Admin</button>
      </div>
 
-      {/* סרגל סינון – ללא כפתור חיפוש */}
+      {/*סרגל סינון */}
       <div className="filters">
         <input
           placeholder="Search by name, email, or order id"

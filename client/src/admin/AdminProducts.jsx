@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, useMemo } from "react";
 import api from "../api/axios";
 import EditProductModal from "./EditProductModal";
 import "./AdminProducts.css";
-
+//ניהול מוצרים
 export default function AdminProducts({ onBack = () => {}, categoryId, categoryName }) {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);  // ← לשורת הסינון לפי קטגוריה
