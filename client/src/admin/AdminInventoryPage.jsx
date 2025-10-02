@@ -1,6 +1,7 @@
+//Roaia Habashi and Rawan Habashi
+
 import React from 'react';
 import AdminInventory from './AdminInventory';
-
 export default function AdminInventoryPage() {
   return (
     <div style={{ padding: '16px' }}>

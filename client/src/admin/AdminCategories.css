@@ -1,5 +1,6 @@
-.admin-cats { padding: 16px; }
+/*Roaia Habashi and Rawan Habashi*/
 
+.admin-cats { padding: 16px; }
 .admin-cats-header{
   position: relative;
   display:flex;
@@ -11,7 +12,6 @@
 .back-home-btn { background:#eee; border:none; padding:8px 12px; border-radius:10px; cursor:pointer; }
 .toolbar { margin: 18px 0 20px; }
 .add-btn { background:#c28d63; color:#fff; border:none; padding:10px 16px; border-radius:12px; cursor:pointer; }
-
 .grid{
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); /* היה 220px */
@@ -23,7 +23,6 @@
   display:flex; flex-direction:column; align-items:center; gap:10px;
 }
 .noimg { opacity:.6; font-size:14px; }
-
 .title { font-weight:700; }
 .actions { display:flex; gap:8px; }
 .actions .danger { background:#e25b5b; color:#fff; border:none; padding:6px 10px; border-radius:10px; cursor:pointer; }
@@ -45,7 +44,6 @@
   border-radius: 12px;
   background: #faf6f2;
 }
-
 /* מציגים את כל התמונה בתוך המסגרת */
 .img-wrap img{
   width: 100%;
@@ -60,7 +58,6 @@
   font-weight:700;
   text-align:center;
 }
-
 /* כפתור חזרה קטן בצד ימין (שם ייחודי כדי לא להתנגש בכלליים אחרים) */
 .cats-back-btn{
   position:absolute;
@@ -83,11 +80,9 @@
   box-shadow:0 3px 10px rgba(0,0,0,.06);
 }
 .cats-back-btn:hover{ background:#e0daf0; }
-
 /* אם נשאר לך הכפתור הישן שמופיע לבדו מעל הכל – מסתירים ליתר ביטחון */
 .admin-cats > .back-home-btn,
 .admin-cats .admin-backbar { display:none !important; }
-
 @media (max-width: 600px){
   .admin-cats-header .cats-title{ font-size:22px; }
   .cats-back-btn{

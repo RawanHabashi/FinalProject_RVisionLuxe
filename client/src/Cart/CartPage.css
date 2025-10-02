@@ -1,9 +1,10 @@
+/*Roaia Habashi and Rawan Habashi*/
+
 .cart-page {
   padding: 20px;
   background-color: #fff3e6;
   min-height: 100vh;
 }
-
 .back-button {
   display: block;
   margin: 0 auto 20px;
@@ -14,25 +15,21 @@
   cursor: pointer;
   border-radius: 6px;
 }
-
 .cart-title {
   text-align: center;
   font-size: 2rem;
   margin-bottom: 30px;
 }
-
 .empty-message {
   text-align: center;
   font-size: 1.2rem;
   color: #888;
 }
-
 .cart-items {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
-
 .cart-item {
   display: flex;
   align-items: center;
@@ -42,17 +39,14 @@
   box-shadow: 0 1px 4px rgba(0,0,0,0.1);
   gap: 20px;
 }
-
 .cart-item-image {
   width: 80px;
   height: 80px;
   object-fit: contain;
 }
-
 .cart-item-details {
   flex: 1;
 }
-
 .remove-btn {
   background-color: #dc3545;
   color: #fff;
@@ -62,7 +56,6 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
-
 .remove-btn {
   background-color: #dc3545;
   color: #fff;
@@ -76,21 +69,17 @@
   white-space: nowrap;       /* ✅ מונע ירידת טקסט שורה */
   flex-shrink: 0;            /* ✅ מונע ממנו להימתח */
 }
-
-
 /* ✅ סיכום עגלה מיושר למרכז */
 .cart-summary {
   text-align: center;
   margin-top: 40px;
 }
-
 /* ✅ טוטאל בולט באמצע */
 .cart-summary h3 {
   font-size: 1.4rem;
   font-weight: bold;
   margin-bottom: 20px;
 }
-
 /* ✅ כפתור Checkout */
 .checkout-btn {
   background-color: #333;
@@ -103,7 +92,6 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
-
 .checkout-btn:hover {
   background-color: #555;
 }

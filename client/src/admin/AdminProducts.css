@@ -1,3 +1,5 @@
+/*Roaia Habashi and Rawan Habashi*/
+
 /* עטיפה כללית + מרכז מסך */
 .admin-products-container{
   padding:18px 20px;
@@ -7,7 +9,6 @@
   margin:0 auto;
   box-sizing:border-box;
 }
-
 /* כותרת ועליונות */
 .admin-products-header{
   position: relative;
@@ -28,7 +29,6 @@
   padding:8px 12px; border-radius:10px; cursor:pointer;
 }
 .back-home-btn:hover{ background:#f0e5da; }
-
 /* שורת פילטרים */
 .filters-row{
   display:grid;
@@ -40,7 +40,6 @@
   width:100%; padding:10px 12px; border:1px solid #d9bfa6; border-radius:10px;
   background:#fff;
 }
-
 /* טבלה */
 .admin-products-table{
   width:100%;
@@ -52,7 +51,6 @@
   border-radius:14px;
   overflow:hidden;
 }
-
 /* כותרת טבלה דביקה */
 .admin-products-table thead th{
   position:sticky; top:0; z-index:1;
@@ -60,7 +58,6 @@
   border-bottom:1px solid #ead8c6;
   font-weight:600;
 }
-
 /* תאים */
 .admin-products-table th,
 .admin-products-table td{
@@ -86,12 +83,10 @@
 .admin-products-header .back-home-btn:hover{
   background:#e0daf0;
 }
-
 /* זברה + ריחוף */
 .admin-products-table tr.even{ background:#fff; }
 .admin-products-table tr.odd { background:#fffaf3; }
 .admin-products-table tbody tr:hover{ background:#fff4e6; }
-
 /* רוחבי עמודות */
 .admin-products-table th:nth-child(1),
 .admin-products-table td:nth-child(1){ width:160px; }                 /* Image */
@@ -99,20 +94,17 @@
 .admin-products-table td:nth-child(4){ width:120px; }                 /* Price */
 .admin-products-table th:nth-child(5),
 .admin-products-table td:nth-child(5){ width:170px; }                 /* Actions */
-
 /* תמונה ממוסגרת ומוקטנת */
 .product-thumb{
   width:140px; height:140px; display:block; margin:0 auto;
   object-fit:contain; background:#faf6f2; border-radius:12px;
 }
-
 /* Price – באותו קו של הכפתורים, ימין וללא שבירה */
 .admin-products-table td.price {
   text-align: center;       
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
-
 /* Actions – כפתורים אחד מעל השני, ממורכזים תחת הכותרת */
 .actions-cell {
   display: flex;
@@ -123,7 +115,6 @@
   white-space: nowrap;
   padding-right: 20px;      /* קצת מרווח מהקצה */
 }
-
 /* כפתורים */
 .edit-btn,.delete-btn,.primary-btn{
   border:none; padding:9px 14px; border-radius:10px; cursor:pointer;
@@ -133,7 +124,6 @@
 .edit-btn:hover{ filter:brightness(0.95); }
 .delete-btn{ background:#ffc885; color:#5a3a10; }
 .delete-btn:hover{ filter:brightness(0.95); }
-
 /* כרטיס הוספה */
 .add-product-card{
   margin-top:18px; background:#fff; border-radius:14px; padding:16px;
@@ -142,7 +132,6 @@
 .add-product-form{ display:grid; grid-template-columns:1fr; gap:10px; }
 .primary-btn{ background:#79c08a; color:#fff; }
 .primary-btn:hover{ filter:brightness(0.95); }
-
 /* רספונסיבי */
 @media (max-width:900px){
   .filters-row{ grid-template-columns:1fr; }

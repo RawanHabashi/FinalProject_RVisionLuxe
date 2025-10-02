@@ -1,6 +1,7 @@
+//Roaia Habashi and Rawan Habashi
+
 import React, { useState } from 'react';
 import './SignUpPage.css';
-
 const SignUpPage = ({ onBack }) => {
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
@@ -12,16 +13,13 @@ const SignUpPage = ({ onBack }) => {
     phone_number: '',
     role: 'customer',
   });
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
     }
-
     try {
       const res = await fetch('http://localhost:5000/api/users', {
         method: 'POST',
@@ -35,11 +33,8 @@ const SignUpPage = ({ onBack }) => {
           role: formData.role,
         }),
       });
-
       const data = await res.json();
-
       if (!res.ok) throw new Error(data.message || 'Registration failed');
-
       alert('✅ Registration successful!');
       if (onBack) onBack();
     } catch (err) {
@@ -47,7 +42,6 @@ const SignUpPage = ({ onBack }) => {
       setError(err.message || 'Registration failed');
     }
   };
-
   return (
     <div className="signup-page">
       <div className="site-title">
@@ -106,7 +100,6 @@ const SignUpPage = ({ onBack }) => {
           >
             <option value="customer">Customer</option>
           </select>
-
           <button type="submit" className="create-account-btn">
             Create Account
           </button>
@@ -121,5 +114,4 @@ const SignUpPage = ({ onBack }) => {
     </div>
   );
 };
-
 export default SignUpPage;

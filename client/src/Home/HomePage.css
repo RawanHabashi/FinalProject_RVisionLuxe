@@ -1,16 +1,16 @@
+/*Roaia Habashi and Rawan Habashi*/
+
 .home-page {
   background-color: #fff5e6;
   min-height: 100vh;
   font-family: 'Arial', sans-serif;
 }
-
 body {
   margin: 0;
   padding: 0;
   background-color: #FFF5E6; /* הצבע מהתמונה */
   font-family: 'Arial', sans-serif;
 }
-
 /* כותרת עליונה */
 header {
   display: flex;
@@ -21,7 +21,6 @@ background-color: #fff5e6;
   border-bottom: 1px solid #ccc;
   position: relative;
 }
-
 /* מרכז - לוגו */
 .logo-container {
   position: absolute;
@@ -31,18 +30,15 @@ background-color: #fff5e6;
   align-items: center;
   gap: 1rem;
 }
-
 .logo {
   width: 65px;
   height: 65px;
 }
-
 .site-title {
   font-size: 2rem;
   font-weight: bold;
   margin: 0;
 }
-
 /* שמאל - כפתורים */
 nav {
   display: flex;
@@ -50,7 +46,6 @@ nav {
   justify-content: space-between;
   width: 100%;
 }
-
 /* צד שמאל */
 nav > button {
   margin-right: 1rem;
@@ -62,7 +57,6 @@ nav > button {
   cursor: pointer;
   font-weight: bold;
 }
-
 /* צד ימין - אייקונים */
 .icon-container {
   display: flex;
@@ -70,7 +64,6 @@ nav > button {
   align-items: center;
   margin-left: auto;
 }
-
 .icon-link {
   background-color: #b98c60;
   border: none;
@@ -79,12 +72,10 @@ nav > button {
   cursor: pointer;
   position: relative;
 }
-
 .icon-link img {
   width: 20px;
   height: 20px;
 }
-
 .badge {
   position: absolute;
   top: -4px;
@@ -95,12 +86,10 @@ nav > button {
   padding: 2px 6px;
   font-size: 0.7rem;
 }
-
 /* באנר */
 .hero-section {
   width: 100%;
 }
-
 .hero-image {
   width: 100%;
   height: auto;
@@ -108,18 +97,15 @@ nav > button {
     background-color: #fff5e6;
 
 }
-
 /* כותרת קטגוריות */
 .title-section {
   text-align: center;
   margin: 2rem 0 1rem;
 }
-
 /* מוצרים */
 .products-container {
   padding: 0 2rem;
 }
-
 .first-row,
 .second-row {
   display: flex;
@@ -127,35 +113,29 @@ nav > button {
   gap: 2rem;
   margin-bottom: 2rem;
 }
-
 .product {
   text-align: center;
   cursor: pointer;
   transition: transform 0.3s ease;
 }
-
 .product:hover {
   transform: scale(1.05);
 }
-
 .product img {
   width: 120px;
   height: auto;
 }
-
 .product span {
   display: block;
   margin-top: 0.5rem;
   font-weight: bold;
 }
-
 .nav-buttons {
   display: flex;
   gap: 1rem;
   align-items: center;
   margin-left: 2rem;
 }
-
 .nav-buttons button {
   background-color: #c39564;
   color: white;
@@ -166,7 +146,6 @@ nav > button {
   cursor: pointer;
   transition: background-color 0.3s;
 }
-
 .nav-buttons button:hover {
   background-color: #a87c50;
 }
@@ -177,7 +156,6 @@ nav > button {
   margin: 40px;
   text-align: center;
 }
-
 .category-card {
   cursor: pointer;
   border: 1px solid #ccc;
@@ -186,11 +164,9 @@ nav > button {
   background-color: #fff8f0;
   transition: transform 0.2s ease;
 }
-
 .category-card:hover {
   transform: scale(1.05);
 }
-
 .category-card img {
   width: 100%;
   height: auto;
@@ -203,7 +179,6 @@ nav > button {
   white-space: nowrap;
   opacity: 0.9;
 }
-
 /* אופציונלי: להסתיר במסכים צרים כדי לא לשבור שורה */
 @media (max-width: 520px) {
   .welcome-message {

@@ -8,7 +8,6 @@ router.get('/stats', async (req, res) => {
     const [products] = await db.query('SELECT COUNT(*) AS count FROM products');
     const [categories] = await db.query('SELECT COUNT(*) AS count FROM categories');
     const [orders] = await db.query('SELECT COUNT(*) AS count FROM orders');
-
     res.json({
       users: users[0].count,
       products: products[0].count,
@@ -20,5 +19,4 @@ router.get('/stats', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-
 module.exports = router;

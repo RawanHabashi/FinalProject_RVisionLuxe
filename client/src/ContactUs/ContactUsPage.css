@@ -1,22 +1,21 @@
+/*Roaia Habashi and Rawan Habashi*/
+
 .contact-page-wrapper {
   background-color: #fef1e5;
   min-height: 100vh;
   padding: 0;
 }
-
 /* כותרת עליונה כללית */
 .top-header {
   text-align: center;
   padding: 20px 0 10px;
 }
-
 .site-name {
   font-size: 32px;
   font-weight: bold;
   color: #333;
   margin-bottom: 5px;
 }
-
 .back-home-btn {
   padding: 8px 20px;
   background-color: white;
@@ -28,13 +27,11 @@
   transition: background-color 0.3s, color 0.3s;
   margin-top: 10px;
 }
-
 .back-home-btn:hover,
 .back-home-btn:active {
   background-color: #d48b58;
   color: white;
 }
-
 .contact-container {
   background-color: white;
   max-width: 500px;
@@ -43,17 +40,14 @@
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
 }
-
 form {
   display: flex;
   flex-direction: column;
 }
-
 form label {
   margin-top: 10px;
   font-weight: bold;
 }
-
 form input,
 form textarea {
   padding: 10px;
@@ -61,7 +55,6 @@ form textarea {
   border: 1px solid #ccc;
   border-radius: 5px;
 }
-
 form button {
   margin-top: 20px;
   padding: 12px;
@@ -72,11 +65,9 @@ form button {
   font-weight: bold;
   cursor: pointer;
 }
-
 form button:hover {
   background-color: #b47046;
 }
-
 .contact-footer {
   margin-top: 20px;
   text-align: center;

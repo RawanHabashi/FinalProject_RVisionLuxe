@@ -1,3 +1,5 @@
+//Roaia Habashi and Rawan Habashi
+
 import "./CategoryModal.css";
 import React, { useEffect, useState } from "react";
 export default function CategoryModal({ mode = "add", category, onSave, onClose }) {
@@ -7,14 +9,12 @@ export default function CategoryModal({ mode = "add", category, onSave, onClose 
     image: category?.image ?? "",   
   });
   const [file, setFile] = useState(null);     
-
   // סגירה ב-Esc
   useEffect(() => {
     const onKey = (e) => e.key === "Escape" && onClose?.();
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
-
   const submit = (e) => {
     e.preventDefault();
     const payload = { ...form };
@@ -23,11 +23,9 @@ export default function CategoryModal({ mode = "add", category, onSave, onClose 
     if (!payload.image?.trim()) delete payload.image;     
     onSave?.(payload, file);
   };
-
   const handleBackdrop = (e) => {
     if (e.target.classList.contains("modal-backdrop")) onClose?.();
   };
-
   return (
     <div className="modal-backdrop" onClick={handleBackdrop}>
       <div className="modal" role="dialog" aria-modal="true">
@@ -41,7 +39,6 @@ export default function CategoryModal({ mode = "add", category, onSave, onClose 
               required
             />
           </label>
-
           <label>
             Image URL (optional)
             <input
@@ -50,7 +47,6 @@ export default function CategoryModal({ mode = "add", category, onSave, onClose 
               onChange={(e) => setForm((p) => ({ ...p, image: e.target.value }))}
             />
           </label>
-
           <label>
             Upload Image (optional)
             <input
@@ -59,7 +55,6 @@ export default function CategoryModal({ mode = "add", category, onSave, onClose 
               onChange={(e) => setFile(e.target.files?.[0] ?? null)}
             />
           </label>
-
           <div className="modal-actions">
             <button type="submit" className="btn btn-primary">
               {mode === "edit" ? "Save" : "Add"}

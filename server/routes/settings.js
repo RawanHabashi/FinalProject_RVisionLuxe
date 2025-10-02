@@ -2,7 +2,6 @@
 const express = require('express');
 const router = express.Router();
 const initDb = require('../config/dbSingleton');
-
 // החזרת אחוז המע״מ הנוכחי
 router.get('/vat', async (req, res) => {
   try {
@@ -15,7 +14,6 @@ router.get('/vat', async (req, res) => {
     res.status(500).json({ error: 'Failed to get VAT' });
   }
 });
-
 // עדכון אחוז המע״מ 
 router.put('/vat', async (req, res) => {
   try {
@@ -28,7 +26,6 @@ router.put('/vat', async (req, res) => {
     if (vat_percent < 0 || vat_percent > 100) {
       return res.status(400).json({ error: 'vat_percent must be between 0 and 100' });
     }
-
     await db.query(
       'INSERT INTO settings (`key`, `value`) VALUES ("vat_percent", ?) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)',
       [String(vat_percent)]
@@ -39,5 +36,4 @@ router.put('/vat', async (req, res) => {
     res.status(500).json({ error: 'Failed to update VAT' });
   }
 });
-
 module.exports = router;

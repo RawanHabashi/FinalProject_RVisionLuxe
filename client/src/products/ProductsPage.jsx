@@ -1,7 +1,8 @@
+//Roaia Habashi and Rawan Habashi
+
 import React, { useEffect, useState } from 'react';
 import api from '../api/axios';
 import './ProductsPage.css';
-
 const categoryMap = {
   wedding: 1,
   school: 2,
@@ -10,15 +11,12 @@ const categoryMap = {
   brand: 5,
   wallet: 6,
 };
-
 const ProductsPage = ({ onAddToCart, onBack, category, onWishlistChange, currentUserId }) => {
   const [products, setProducts] = useState([]);
   const [wishlist, setWishlist] = useState([]);
-
   // מפתח מועדפים לפי משתמש (guest אם אין התחברות)
   const userId = currentUserId || JSON.parse(localStorage.getItem('user') || '{}')?.user_id || 'guest';
   const WISHLIST_KEY = `wishlist:${userId}`;
-
   // טוענים מועדפים לפי המשתמש הנוכחי
   useEffect(() => {
     try {
@@ -32,7 +30,6 @@ const ProductsPage = ({ onAddToCart, onBack, category, onWishlistChange, current
     }
     // בכל פעם שהמשתמש מתחלף נטען מחדש
   }, [WISHLIST_KEY]); // תלוי במפתח שנגזר מה-userId
-
   // טוענים מוצרים לפי קטגוריה
   useEffect(() => {
     api.get('/products')
@@ -45,7 +42,6 @@ const ProductsPage = ({ onAddToCart, onBack, category, onWishlistChange, current
       })
       .catch(err => console.error('❌ Failed to fetch products:', err));
   }, [category]);
-
   const getCategoryTitle = (cat) => {
     switch (cat) {
       case 'wedding': return 'Wedding Bags';
@@ -57,26 +53,21 @@ const ProductsPage = ({ onAddToCart, onBack, category, onWishlistChange, current
       default: return 'All Products';
     }
   };
-
   const toggleWishlist = (productId) => {
     const id = Number(productId);
     const updated = wishlist.includes(id)
       ? wishlist.filter(x => x !== id)
       : [...wishlist, id];
-
     setWishlist(updated);
     localStorage.setItem(WISHLIST_KEY, JSON.stringify(updated));
     onWishlistChange?.(updated.length);
   };
-
   return (
     <div className="products-page">
       <div className="products-header">
         <button className="back-button" onClick={onBack}>← Back to Home</button>
       </div>
-
       <h2 className="products-title">{getCategoryTitle(category)}</h2>
-
       {products.length === 0 ? (
         <p className="empty-message">No products found in this category.</p>
       ) : (
@@ -98,7 +89,6 @@ const ProductsPage = ({ onAddToCart, onBack, category, onWishlistChange, current
                 >
                   {wishlist.includes(Number(product.product_id)) ? '❤️' : '♡'}
                 </button>
-
                 <button onClick={() => onAddToCart(product)}>Add to Cart</button>
               </div>
             </div>
@@ -108,5 +98,4 @@ const ProductsPage = ({ onAddToCart, onBack, category, onWishlistChange, current
     </div>
   );
 };
-
 export default ProductsPage;

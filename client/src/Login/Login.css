@@ -1,3 +1,5 @@
+/*Roaia Habashi and Rawan Habashi*/
+
 .login-page {
   min-height: 100vh;
   background-color: #fff5e6;
@@ -7,7 +9,6 @@
   padding: 2rem;
   font-family: Arial, sans-serif;
 }
-
 .login-box {
   background-color: #ffffff;
   padding: 2rem 2.5rem;
@@ -17,12 +18,10 @@
   max-width: 400px;
   text-align: center;
 }
-
 .login-box h2 {
   margin-bottom: 1.5rem;
   color: #333;
 }
-
 form label {
   display: block;
   text-align: left;
@@ -30,7 +29,6 @@ form label {
   color: #333;
   font-weight: bold;
 }
-
 form input {
   width: 100%;
   padding: 10px;
@@ -39,12 +37,10 @@ form input {
   border-radius: 6px;
   font-size: 1rem;
 }
-
 .login-links {
   margin-bottom: 1rem;
   text-align: right;
 }
-
 .forgot-link {
   background-color: #fff;
   color: #b58d63;
@@ -56,11 +52,9 @@ form input {
   cursor: pointer;
   transition: all 0.3s ease;
 }
-
 .forgot-link:hover {
   background-color: #f5eee3;
 }
-
 button[type="submit"] {
   background-color: #b58d63;
   color: white;
@@ -73,22 +67,18 @@ button[type="submit"] {
   font-weight: bold;
   transition: background-color 0.3s ease;
 }
-
 button[type="submit"]:hover {
   background-color: #a2784f;
 }
-
 .login-message {
   margin-top: 1rem;
   color: #d32f2f;
   font-weight: bold;
 }
-
 .signup-link {
   margin-top: 1rem;
   font-size: 0.9rem;
 }
-
 .signup-link a {
   color: #333;
   text-decoration: underline;

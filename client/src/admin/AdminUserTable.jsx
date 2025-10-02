@@ -1,3 +1,5 @@
+//Roaia Habashi and Rawan Habashi
+
 import React, { useEffect, useState } from 'react';
 import api from '../api/axios';
 import EditUserModal from './EditUserModal';
@@ -26,7 +28,6 @@ const AdminUserTable = ({ onBack }) => {
       setLoading(false);
     }
   };
-
   // מחיקת משתמש
   const handleDelete = async (userId) => {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
@@ -39,7 +40,6 @@ const AdminUserTable = ({ onBack }) => {
       alert('❌ Delete failed');
     }
   };
-
   // עדכון משתמש (מהמודל)
   const handleUpdate = async (updatedUser) => {
     try {
@@ -53,11 +53,9 @@ const AdminUserTable = ({ onBack }) => {
       alert('❌ Update failed');
     }
   };
-
   useEffect(() => {
     fetchUsers();
   }, []);
-
   return (
     <div className="admin-table-container">
       <div className="admin-users-header">
@@ -66,10 +64,8 @@ const AdminUserTable = ({ onBack }) => {
           <button className="back-home-btn" onClick={onBack}> Back to Admin</button>
         )}
       </div>
-
       {loading && <div className="loading">Loading users...</div>}
       {error && <div className="error">{error}</div>}
-
       {!loading && !error && (
         <table className="admin-user-table">
           <thead>
@@ -106,7 +102,6 @@ const AdminUserTable = ({ onBack }) => {
           </tbody>
         </table>
       )}
-
       {selectedUser && (
         <EditUserModal
           user={selectedUser}
@@ -117,5 +112,4 @@ const AdminUserTable = ({ onBack }) => {
     </div>
   );
 };
-
 export default AdminUserTable;

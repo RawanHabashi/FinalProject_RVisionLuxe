@@ -15,7 +15,6 @@ transporter.verify((error, success) => {
     console.log("✅ Ready to send emails!");
   }
 });
-
 const sendRecoveryEmail = async (to, code) => {
   const mailOptions = {
     from: `Rvision Luxe <${process.env.EMAIL_USER}>`,
@@ -23,8 +22,6 @@ const sendRecoveryEmail = async (to, code) => {
     subject: "🔐 Password Recovery Code",
     text: `Your verification code is: ${code}\nIt is valid for 15 minutes.`
   };
-
   await transporter.sendMail(mailOptions);
 };
-
 module.exports = { sendRecoveryEmail };

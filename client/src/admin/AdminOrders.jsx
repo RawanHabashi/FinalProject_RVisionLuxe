@@ -1,3 +1,5 @@
+//Roaia Habashi and Rawan Habashi
+
 import React, { useEffect, useState } from "react";
 import api from "../api/axios";
 import "./AdminOrders.css";
@@ -6,17 +8,14 @@ const STATUS_OPTIONS = ["Pending","Processing","Ready for Shipment","In Transit"
 const formatILS = (val) =>
   new Intl.NumberFormat("he-IL", { style: "currency", currency: "ILS", minimumFractionDigits: 2 })
     .format(Number(val || 0));
-
 // עמוד אחד – הכל
 const LIMIT_ALL = 100000;
-
 export default function AdminOrders({ onBack = () => {} }) {
   const [orders, setOrders]   = useState([]);
   const [q, setQ]             = useState("");
   const [status, setStatus]   = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-
   // פונקציית טעינה שמקבלת אופציונלית override לפרמטרים
   const fetchOrders = async (overrides = {}) => {
     setLoading(true);
@@ -37,10 +36,8 @@ export default function AdminOrders({ onBack = () => {} }) {
       setLoading(false);
     }
   };
-
   // טעינה ראשונית
   useEffect(() => { fetchOrders(); /* eslint-disable-next-line */ }, []);
-
   // חיפוש עם Enter בלבד
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -48,14 +45,12 @@ export default function AdminOrders({ onBack = () => {} }) {
       fetchOrders({ q: e.currentTarget.value.trim() });
     }
   };
-
   // שינוי סטטוס מסנן – טען מחדש
   const handleStatusFilter = (e) => {
     const v = e.target.value;
     setStatus(v);
     fetchOrders({ status: v });
   };
-
   const handleStatusChange = async (order_id, newStatus) => {
     const prev = orders.map(o => ({ ...o }));
     setOrders(list => list.map(o => o.order_id === order_id ? { ...o, status: newStatus } : o));
@@ -67,17 +62,14 @@ export default function AdminOrders({ onBack = () => {} }) {
       setOrders(prev);
     }
   };
-
   const openInvoice = (order_id) =>
     window.open(`${api.defaults.baseURL}/orders/invoice/${order_id}`, "_blank");
-
   return (
     <div className="admin-orders">
       <div className="admin-orders-header">
       <h2 className="title">Order Management 📦</h2>
      <button className="orders-back-btn" onClick={onBack}> Back to Admin</button>
      </div>
-
       {/*סרגל סינון */}
       <div className="filters">
         <input
@@ -91,9 +83,7 @@ export default function AdminOrders({ onBack = () => {} }) {
           {STATUS_OPTIONS.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
       </div>
-
       {errorMsg && <div className="error">{errorMsg}</div>}
-
       {loading ? (
         <div className="loading">Loading…</div>
       ) : (
@@ -148,7 +138,6 @@ export default function AdminOrders({ onBack = () => {} }) {
           </table>
         </div>
       )}
-
     </div>
   );
 }

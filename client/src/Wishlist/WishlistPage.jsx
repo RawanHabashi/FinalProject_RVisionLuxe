@@ -1,18 +1,17 @@
+//Roaia Habashi and Rawan Habashi
+
 import React, { useEffect, useState } from 'react';
 import api from '../api/axios';
 import './WishlistPage.css';
-
 export default function WishlistPage({ onBack, onAddToCart, currentUserId, onWishlistChange }) {
   const [products, setProducts] = useState([]);
   const [wishIds, setWishIds] = useState([]);
-
   // מזהה משתמש נוכחי + מפתח בהתאם
   const userId =
     currentUserId ||
     JSON.parse(localStorage.getItem('user') || '{}')?.user_id ||
     'guest';
   const WISHLIST_KEY = `wishlist:${userId}`;
-
   // טוען מזהי מועדפים לפי המשתמש
   useEffect(() => {
     try {
@@ -25,7 +24,6 @@ export default function WishlistPage({ onBack, onAddToCart, currentUserId, onWis
       onWishlistChange?.(0);
     }
   }, [WISHLIST_KEY, onWishlistChange]);
-
   // מביא את המוצרים ומסנן לפי ה-IDs
   useEffect(() => {
     if (!wishIds.length) {
@@ -40,7 +38,6 @@ export default function WishlistPage({ onBack, onAddToCart, currentUserId, onWis
       })
       .catch(err => console.error('❌ Failed to fetch products:', err));
   }, [wishIds]);
-
   const removeFromWishlist = (productId) => {
     const id = Number(productId);
     const nextIds = wishIds.filter(x => x !== id);
@@ -49,12 +46,10 @@ export default function WishlistPage({ onBack, onAddToCart, currentUserId, onWis
     onWishlistChange?.(nextIds.length);
     setProducts(prev => prev.filter(p => Number(p.product_id) !== id));
   };
-
   return (
     <div className="wishlist-page">
       <button className="back-button" onClick={onBack}>← Back to Home</button>
       <h2 className="wishlist-title">Your Wishlist</h2>
-
       {products.length === 0 ? (
         <p className="empty-message">You have no items in your wishlist.</p>
       ) : (

@@ -1,3 +1,5 @@
+//Roaia Habashi and Rawan Habashi
+
 import React from 'react';
 import './CategoryPage.css';
 
@@ -6,7 +8,6 @@ const CategoryPage = ({ type = "", products = [], onBack, onAddToWishlist }) => 
     <div className="category-page">
       <button className="back-btn" onClick={onBack}>← Back</button>
       <h2 className="category-title">{type.charAt(0).toUpperCase() + type.slice(1)} Bags</h2>
-
       <div className="category-products">
         {products.length > 0 ? (
           products.map((product, index) => (
@@ -36,5 +37,4 @@ const CategoryPage = ({ type = "", products = [], onBack, onAddToWishlist }) => 
     </div>
   );
 };
-
 export default CategoryPage;

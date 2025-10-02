@@ -1,24 +1,20 @@
+//Roaia Habashi and Rawan Habashi
+
 import React, { useState } from 'react';
 import api from '../api/axios';
 import './Login.css';
-
 function Login({ onForgotPassword, onRegister, onLoginSuccess, onAdminLogin }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
-
   const handleLogin = async (e) => {
     e.preventDefault();
     setMessage('');
-
     try {
       const res = await api.post('/users/login', { email, password });
-
       console.log('🔁 Full Response:', res);
       console.log('📦 Data:', res.data);
-
       const user = res.data.user || res.data; // ← גמישות אם השרת מחזיר ישירות את המשתמש
-      
       if (user && user.email) {
         localStorage.setItem("user", JSON.stringify(user));
          // נשמור name/username בצורה סלחנית
@@ -32,7 +28,6 @@ function Login({ onForgotPassword, onRegister, onLoginSuccess, onAdminLogin }) {
     localStorage.setItem("user_id", user.user_id);
   }
         setMessage("✅ Logged in successfully");
-
         setTimeout(() => {
           if (user.role === 'admin' && onAdminLogin) {
             onAdminLogin();
@@ -60,7 +55,6 @@ function Login({ onForgotPassword, onRegister, onLoginSuccess, onAdminLogin }) {
   };
 
   return (
-    
     <div className="login-page">
         <div className="login-container">
         <h1 className="site-title">Rvision Luxe</h1>
@@ -74,7 +68,6 @@ function Login({ onForgotPassword, onRegister, onLoginSuccess, onAdminLogin }) {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-
           <label>Password:</label>
           <input
             type="password"
@@ -82,7 +75,6 @@ function Login({ onForgotPassword, onRegister, onLoginSuccess, onAdminLogin }) {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-
           <div className="login-links">
             <button
               type="button"
@@ -92,9 +84,7 @@ function Login({ onForgotPassword, onRegister, onLoginSuccess, onAdminLogin }) {
               Forgot password?
             </button>
           </div>
-
           <button type="submit">Continue</button>
-
           {message && (
             <p
               className="login-message"
@@ -107,7 +97,6 @@ function Login({ onForgotPassword, onRegister, onLoginSuccess, onAdminLogin }) {
             </p>
           )}
         </form>
-
         <div className="signup-link">
           Don’t have an account?{' '}
           <button type="button" className="link-button" onClick={onRegister}>
@@ -119,6 +108,5 @@ function Login({ onForgotPassword, onRegister, onLoginSuccess, onAdminLogin }) {
      </div>
   );
 }
-
 export default Login;
 

@@ -1,3 +1,4 @@
+//Roaia Habashi and Rawan Habashi
 //חיבור ה־frontend ל־backend
 import axios from 'axios';
 //כל קומפוננטה באפליקציה יכולה לייבא את api ולשלוח בקשות
@@ -8,7 +9,6 @@ baseURL: 'http://localhost:5000/api'
     'Content-Type': 'application/json',
   },
 });
-
 // ✅ אם נרצה לגשת לקבצים סטטיים (תמונות וכו') מתוך תיקיית images בשרת
 api.interceptors.request.use(config => {
   if (config.url && config.url.startsWith('/images/')) {
@@ -16,5 +16,4 @@ api.interceptors.request.use(config => {
   }
   return config;
 });
-
 export default api;

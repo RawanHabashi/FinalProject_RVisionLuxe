@@ -1,3 +1,5 @@
+//Roaia Habashi and Rawan Habashi
+
 import React, { useEffect, useState } from 'react';
 import { getInventoryStats, adjustStock } from '../api/inventoryApi';
 import './InventorySnapshot.css';
@@ -5,15 +7,12 @@ import './InventorySnapshot.css';
 export default function InventorySnapshot({ onManageClick }) {
   const [stats, setStats] = useState({ outOfStock: 0, lowCount: 0, reservedTotal: 0, topLow: [] });
   const [loading, setLoading] = useState(true);
-
   async function load() {
     setLoading(true);
     try { setStats(await getInventoryStats()); }
     finally { setLoading(false); }
   }
-
   useEffect(() => { load(); }, []);
-
   async function quickAdjust(item, delta) {
     await adjustStock({
       product_id: item.product_id,
@@ -22,20 +21,17 @@ export default function InventorySnapshot({ onManageClick }) {
     });
     await load();
   }
-
   return (
     <div className="inv-snap">
       <div className="inv-snap-header">
         <h3>Inventory Snapshot</h3>
         <button className="manage-btn" onClick={onManageClick}>Manage Inventory</button>
       </div>
-
       <div className="inv-snap-kpis">
         <div className="kpi"><div className="kpi-title">Out of stock</div><div className="kpi-value">{stats.outOfStock}</div></div>
         <div className="kpi"><div className="kpi-title">Low stock</div><div className="kpi-value">{stats.lowCount}</div></div>
         <div className="kpi"><div className="kpi-title">Reserved (units)</div><div className="kpi-value">{stats.reservedTotal}</div></div>
       </div>
-
       <div className="inv-snap-table">
         {loading ? <div className="loading">Loading…</div> :
          stats.topLow.length === 0 ? <div className="empty">No products</div> :

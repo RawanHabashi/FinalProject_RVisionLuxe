@@ -1,3 +1,5 @@
+//Roaia Habashi and Rawan Habashi
+
 import React, { useEffect, useMemo, useState } from "react";
 import api from "../api/axios";
 import CategoryModal from "./CategoryModal";
@@ -8,10 +10,8 @@ export default function AdminCategories({ onBack = () => {} }) {
   const [usageMap, setUsageMap] = useState({}); 
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState(null);
-
   const [editingCat, setEditingCat] = useState(null);
   const [adding, setAdding] = useState(false);
-
   // עוזר להצגת תמונה
   const API_HOST = (api?.defaults?.baseURL || "http://localhost:5000").replace(/\/api\/?$/, "");
   const getImageSrc = (img) => {
@@ -20,7 +20,6 @@ export default function AdminCategories({ onBack = () => {} }) {
     if (img.startsWith("uploads/") || img.startsWith("images/")) return `${API_HOST}/${img}`;
     return `${API_HOST}/images/${img}`;
   };
-
   const fetchAll = async () => {
     setLoading(true); setError(null);
     try {
@@ -41,11 +40,8 @@ export default function AdminCategories({ onBack = () => {} }) {
       setLoading(false);
     }
   };
-
   useEffect(() => { fetchAll(); }, []);
-
   const isInUse = (id) => (usageMap?.[id] ?? 0) > 0;
-
   const handleDelete = async (id) => {
     try {
       // בדיקה פר-קטגוריה (למקרה שהמפה לא עדכנית)
@@ -58,9 +54,7 @@ export default function AdminCategories({ onBack = () => {} }) {
         alert(`אי אפשר למחוק: בקטגוריה יש ${count} מוצרים.`);
         return;
       }
-
       if (!window.confirm("Delete this category?")) return;
-
       await api.delete(`/categories/${id}`);
       setCategories((prev) => prev.filter((c) => (c.category_id ?? c.id) !== id));
       setUsageMap((prev) => {
@@ -78,12 +72,10 @@ export default function AdminCategories({ onBack = () => {} }) {
       }
     }
   };
-
   const handleSave = async (payload, file) => {
     try {
       const isEdit = !!payload.category_id || !!payload.id;
       const id = payload.category_id ?? payload.id;
-
       if (file) {
         const fd = new FormData();
         Object.entries(payload).forEach(([k, v]) => fd.append(k, v ?? ""));
@@ -94,7 +86,6 @@ export default function AdminCategories({ onBack = () => {} }) {
         if (isEdit) await api.put(`/categories/${id}`, payload);
         else        await api.post("/categories", payload);
       }
-
       await fetchAll();
       setEditingCat(null);
       setAdding(false);
@@ -104,28 +95,23 @@ export default function AdminCategories({ onBack = () => {} }) {
       alert("❌ Save failed");
     }
   };
-
   // מיון לפי שם
   const sortedCategories = useMemo(() => {
     return [...categories].sort((a, b) =>
       String(a.name || "").localeCompare(String(b.name || ""))
     );
   }, [categories]);
-
   return (
     <div className="admin-cats">
       <div className="admin-cats-header">
         <h2 className="cats-title"> Category Management🗂️</h2>
         <button className="cats-back-btn"  onClick={onBack}> Back to Admin</button>
       </div>
-
       <div className="toolbar">
         <button className="add-btn" onClick={() => setAdding(true)}>Add a new category +</button>
       </div>
-
       {loading && <div className="loading">Loading...</div>}
       {error && <div className="error">{error}</div>}
-
       {!loading && !error && (
         <div className="grid">
           {sortedCategories.length === 0 ? (
@@ -165,7 +151,6 @@ export default function AdminCategories({ onBack = () => {} }) {
           )}
         </div>
       )}
-
       {adding && (
         <CategoryModal
           mode="add"
@@ -173,7 +158,6 @@ export default function AdminCategories({ onBack = () => {} }) {
           onSave={handleSave}
         />
       )}
-
       {editingCat && (
         <CategoryModal
           mode="edit"

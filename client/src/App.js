@@ -1,3 +1,5 @@
+//Roaia Habashi and Rawan Habashi
+
 import React, { useState, useEffect } from "react";
 import Login from "./Login/Login";
 import SignUpPage from "./SignUp/SignUpPage";
@@ -15,9 +17,7 @@ import ProductsPage from './products/ProductsPage';
 import SearchPage from './Search/SearchPage';
 import ContactUs from "./ContactUs/ContactUsPage";
 import CheckoutPage from "./Checkout/CheckoutPage";
-import OrderStatusPage from "./OrderStatus/OrderStatusPage";
 import OrdersInformation from "./OrdersInformation/OrdersInformation";
-
 function App() {
   const [view, setView] = useState("home");
   const [wishlistItems, setWishlistItems] = useState([]); // (יישאר זמני עד שיעודכן ה-WishlistPage)
@@ -25,21 +25,16 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [lastOrderId, setLastOrderId] = useState(null);
   const [toast, setToast] = useState({ show: false, text: "" });
-
   const goTo = (page) => setView(page);
-
   // ===== helper: user id נוכחי =====
   const getCurrentUserId = () =>
     JSON.parse(localStorage.getItem("user") || "{}")?.user_id || "guest";
-
   const [currentUserId, setCurrentUserId] = useState(getCurrentUserId());
-
   // ===== username להצגה =====
   const [username, setUsername] = useState(() => {
     const u = JSON.parse(localStorage.getItem("user") || "{}");
     return localStorage.getItem("username") ?? u.name ?? u.username ?? null;
   });
-
   // ===== ספירת מועדפים (לבאדג') =====
   const [wishlistCount, setWishlistCount] = useState(() => {
     try {
@@ -49,7 +44,6 @@ function App() {
       return 0;
     }
   });
-
   // ===== טוען סל ומועדפים כשהמשתמש מתחלף =====
   useEffect(() => {
     // cart
@@ -67,7 +61,6 @@ function App() {
       setWishlistCount(0);
     }
   }, [currentUserId]);
-
   // ===== סנכרון בין טאבים: מגיב רק למפתחות של המשתמש הנוכחי =====
   useEffect(() => {
     const onStorage = (e) => {
@@ -91,11 +84,9 @@ function App() {
     window.addEventListener("storage", onStorage);
     return () => window.removeEventListener("storage", onStorage);
   }, [currentUserId]);
-
   // ===== פונקציות לסל (שומרות לפי משתמש) =====
   const saveCart = (items) =>
     localStorage.setItem(`cart:${currentUserId}`, JSON.stringify(items));
-
   const addToCart = (product) => {
     const existingItem = cartItems.find((item) => item.name === product.name);
     if (existingItem) {
@@ -114,13 +105,11 @@ function App() {
       showToast(`"${product.name}" added to cart`);
     }
   };
-
   const removeFromCart = (productName) => {
     const updated = cartItems.filter((item) => item.name !== productName);
     setCartItems(updated);
     saveCart(updated);
   };
-
   // ===== התחברות/התנתקות =====
   const handleLoginSuccess = () => {
     const u = JSON.parse(localStorage.getItem("user") || "{}");
@@ -128,23 +117,18 @@ function App() {
     setCurrentUserId(getCurrentUserId()); 
     goTo("home");
   };
-
   const handleLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("username");
     localStorage.removeItem("user_id");
     setUsername(null);
     setCurrentUserId("guest"); 
- 
     //אם הלקוח אין לא חשבון(אורח) מאפסים הסל והמועדפים
      localStorage.removeItem("cart:guest");
      localStorage.removeItem("wishlist:guest");
-
     goTo("home");
   };
-
   const isLoggedIn = currentUserId !== "guest";
-
   const handleProceedCheckout = () => {
     if (!isLoggedIn) {
       alert("You need to sign in to place an order.");
@@ -153,12 +137,10 @@ function App() {
     }
     setView("checkout");
   };
-
   const showToast = (text) => {
     setToast({ show: true, text });
     setTimeout(() => setToast({ show: false, text: "" }), 2000);
   };
-
   return (
     <div className="App">
       {view === "login" && (
@@ -222,10 +204,6 @@ function App() {
         />
       )}
 
-      {view === "orderStatus" && lastOrderId && (
-        <OrderStatusPage orderId={lastOrderId} onBack={() => goTo("home")} />
-      )}
-
       {view === "ordersInfo" && (
         <OrdersInformation userId={currentUserId} onBack={() => goTo("home")} />
       )}
@@ -283,8 +261,6 @@ function App() {
   {view === "adminOrders" && (
   <AdminOrders onBack={() => goTo("admin")} />
  )}
-
-
       {toast.show && (
         <div
           style={{
@@ -309,5 +285,4 @@ function App() {
     </div>
   );
 }
-
 export default App;

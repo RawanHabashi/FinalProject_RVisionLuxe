@@ -1,3 +1,5 @@
+/*Roaia Habashi and Rawan Habashi*/
+
 /* ===== בסיס כללי ===== */
 body {
   margin: 0;
@@ -7,7 +9,6 @@ body {
   background-position: center;
   background-attachment: fixed;
 }
-
 .admin-dashboard {
   min-height: 100vh;
   display: flex;
@@ -18,7 +19,6 @@ body {
   backdrop-filter: blur(3px);
   text-align: center;
 }
-
 .admin-avatar {
   width: 96px;
   height: 96px;
@@ -27,20 +27,17 @@ body {
   box-shadow: 0 4px 16px rgba(0,0,0,0.12);
   object-fit: cover;
 }
-
 .admin-dashboard h1 {
   font-size: 2.5rem;
   color: #5a3e2b;
   margin: 10px 0 6px;
 }
-
 .welcome-text {
   font-size: 1.1rem;
   font-weight: 500;
   color: #7a5c45;
   margin-bottom: 26px;
 }
-
 /* ===== כרטיסי KPI עם כפתורים ===== */
 .stats-cards {
   display: grid;
@@ -50,7 +47,6 @@ body {
   max-width: 900px;
   margin-bottom: 40px;
 }
-
 .card {
   background: #fffaf4;
   border: 1px solid #decbb5;
@@ -64,24 +60,20 @@ body {
   min-height: 150px; /* גובה אחיד לכל הכרטיסים */
   transition: transform .1s ease, box-shadow .2s ease;
 }
-
 .card:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(0,0,0,0.12);
 }
-
 .card .kpi-title {
   font-weight: 600;
   font-size: 1rem;
   margin-bottom: 8px;
 }
-
 .card .kpi-value {
   font-size: 1.4rem;
   font-weight: bold;
   margin-bottom: 14px;
 }
-
 .card .manage-btn {
   background: #b68b6c;
   color: #fff;
@@ -94,7 +86,6 @@ body {
   width: 100%;
   max-width: 140px;
 }
-
 .card .manage-btn:hover {
   background: #9a7458;
   transform: translateY(-1px);
@@ -103,7 +94,6 @@ body {
 .card button {
   margin-top: 8px;  /* במקום 16px או יותר – זה מצמצם את הרווח */
 }
-
 /* ===== VAT card tidy ===== */
 .vat-card{
   background:#fdf9f4;
@@ -115,7 +105,6 @@ body {
   margin:10px auto 26px;
   box-shadow:0 4px 14px rgba(0,0,0,.08);
 }
-
 .vat-head{
   display:flex;
   justify-content:space-between;
@@ -128,7 +117,6 @@ body {
   color:#5b4436;
 }
 .vat-current{ color:#6c5648; font-size:.98rem; }
-
 .vat-form{
   display:grid;
   grid-template-columns: 90px 1fr auto;
@@ -154,7 +142,6 @@ body {
   border-color:#b68b6c;
   box-shadow:0 0 0 3px rgba(182,139,108,.18);
 }
-
 .vat-save{
   height:40px;
   padding:0 18px;
@@ -169,17 +156,13 @@ body {
 }
 .vat-save:hover{ transform:translateY(-1px); }
 .vat-save:disabled{ opacity:.65; cursor:default; transform:none; }
-
 .vat-msg{ margin-top:10px; font-weight:700; font-size:.95rem; }
 .vat-msg.ok{ color:#1f7a37; }
 .vat-msg.err{ color:#a33131; }
-
-
 /* ===== כפתור חזרה ===== */
 .dashboard-buttons {
   margin-top: 20px;
 }
-
 .dashboard-buttons button {
   background: #b68b6c;
   border: none;
@@ -191,12 +174,10 @@ body {
   cursor: pointer;
   transition: background .2s ease, transform .1s ease;
 }
-
 .dashboard-buttons button:hover {
   background: #9a7458;
   transform: translateY(-1px);
 }
-
 /* ===== רספונסיביות ===== */
 @media (max-width: 950px) {
   .stats-cards {
@@ -204,7 +185,6 @@ body {
     gap: 16px;
   }
 }
-
 @media (max-width: 550px) {
   .stats-cards {
     grid-template-columns: 1fr;
@@ -224,7 +204,6 @@ body {
   /* מה שיש לך כבר */
   margin-bottom: 48px; /* היה קטן יותר; הגדלנו מעט */
 }
-
 /* ——— כפתורי Manage: גווני hover עקביים ——— */
 .card .manage-btn {
   background: #b68b6c;
@@ -244,7 +223,6 @@ body {
   transform: translateY(-1px);
   box-shadow: 0 10px 22px rgba(182,139,108,0.28);
 }
-
 /* ——— VAT Card: מרכזנו את Current מעל השדה, ויישרנו הכול ——— */
 .vat-card{
   background:#fdf9f4;
@@ -257,20 +235,17 @@ body {
   box-shadow:0 4px 14px rgba(0,0,0,.08);
   text-align:center;           /* מרכזי */
 }
-
 .vat-title{
   margin:0 0 6px 0;
   font-size:1.2rem;
   color:#5b4436;
 }
-
 /* Current למעלה ובמרכז */
 .vat-current.top{
   font-size:1rem;
   color:#6c5648;
   margin-bottom:12px;
 }
-
 /* מצב אנכי: תווית, שדה, כפתור – אחד מתחת לשני */
 .vat-form.vat-form--vertical{
   display:grid;
@@ -278,12 +253,10 @@ body {
   gap: 10px;
   justify-items:center;        /* מרכז את התוכן */
 }
-
 .vat-form.vat-form--vertical label{
   font-weight:700;
   color:#6c5648;
 }
-
 .vat-form.vat-form--vertical input{
   width: 100%;
   max-width: 360px;
@@ -302,7 +275,6 @@ body {
   border-color:#b68b6c;
   box-shadow:0 0 0 3px rgba(182,139,108,.18);
 }
-
 /* כפתור שמירה – צבעים אחידים עם השאר ו-hover מעט כהה יותר */
 .vat-save{
   height:42px;
@@ -323,11 +295,9 @@ body {
   transform:translateY(-1px); 
 }
 .vat-save:disabled{ opacity:.65; cursor:default; transform:none; }
-
 .vat-msg{ margin-top:10px; font-weight:700; font-size:.95rem; }
 .vat-msg.ok{ color:#1f7a37; }
 .vat-msg.err{ color:#a33131; }
-
 /* ——— כפתור Back to Home: hover עקבי ——— */
 .dashboard-buttons button {
   background-color: #b68b6c;
@@ -345,7 +315,6 @@ body {
   font-weight: 500;
   color: #6b4b3e; /* טון עדין יותר */
 }
-
 /* השדה עצמו – שים לב שהוא יותר מודגש */
 .vat-box select {
   font-size: 18px;      /* טיפה גדול יותר */

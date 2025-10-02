@@ -1,45 +1,38 @@
+//Roaia Habashi and Rawan Habashi
+
 import React, { useEffect, useState } from 'react';
 import axios from '../api/axios';
 import './SearchPage.css';
-
 function SearchPage({ onBack }) {
   const [products, setProducts] = useState([]);
   const [typeFilter, setTypeFilter] = useState('');
   const [colorFilter, setColorFilter] = useState('');
-
   const fetchProducts = async () => {
     try {
       const response = await axios.get('/products');
       let filtered = response.data;
-
       if (typeFilter) {
         filtered = filtered.filter((p) =>
           p.name.toLowerCase().includes(typeFilter.toLowerCase())
         );
       }
-
       if (colorFilter) {
         filtered = filtered.filter((p) =>
           p.name.toLowerCase().includes(colorFilter.toLowerCase())
         );
       }
-
       setProducts(filtered);
     } catch (error) {
       console.error('❌ Failed to fetch products:', error);
     }
   };
-
   useEffect(() => {
     fetchProducts();
   }, [typeFilter, colorFilter]);
-
   return (
     <div className="search-page">
       <h2>Search Women's Bags</h2>
-
       <button onClick={onBack} className="back-button">← Back to Home</button>
-
       <div className="filters">
         <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
           <option value="">All Types</option>
@@ -50,7 +43,6 @@ function SearchPage({ onBack }) {
           <option value="brand">Brand Bag</option>
           <option value="wallet">Wallet</option>
         </select>
-
         <select value={colorFilter} onChange={(e) => setColorFilter(e.target.value)}>
           <option value="">All Colors</option>
           <option value="black">Black</option>
@@ -60,10 +52,8 @@ function SearchPage({ onBack }) {
           <option value="beige">Beige</option>
           <option value="brown">Brown</option>
           <option value="colorful">Colorful</option>
-
         </select>
       </div>
-
      <div className="products-list">
   {products.length > 0 ? (
     products.map((product) => (
@@ -82,6 +72,4 @@ function SearchPage({ onBack }) {
 </div>
 </div>
   );}
-
-
 export default SearchPage;

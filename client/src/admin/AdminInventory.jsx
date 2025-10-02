@@ -1,3 +1,5 @@
+//Roaia Habashi and Rawan Habashi
+
 import React, { useEffect, useMemo, useState } from 'react';
 import { listInventory, adjustStock, fetchMovements } from '../api/inventoryApi';
 import './AdminInventory.css';
@@ -7,7 +9,6 @@ const LowBadge = ({ available, reorder }) => {
   const label  = status === 'out' ? 'Out of stock' : status === 'low' ? 'Low' : 'OK';
   return <span className={`inv-badge ${status}`}>{label}</span>;
 };
-
 export default function AdminInventory() {
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
@@ -19,7 +20,6 @@ export default function AdminInventory() {
   const [loading, setLoading] = useState(false);
   const [sel, setSel] = useState(null);
   const pages = useMemo(() => Math.max(1, Math.ceil(total / pageSize)), [total, pageSize]);
-
   async function load() {
     setLoading(true);
     try {
@@ -30,12 +30,9 @@ export default function AdminInventory() {
       setLoading(false);
     }
   }
-
   useEffect(() => { load(); /* eslint-disable-next-line */ }, [page, sort, dir]);
-
   const onSearch = (e) => { setQuery(e.target.value); setPage(1); };
   const runSearch = () => load();
-
   const onAdjust = async (product_id) => {
     const qtyStr = prompt('Enter quantity change (use negative to decrease):', '1');
     if (!qtyStr) return;
@@ -47,18 +44,15 @@ export default function AdminInventory() {
     await load();
     alert('Stock updated');
   };
-
   const openHistory = async (row) => {
     const moves = await fetchMovements(row.product_id);
     setSel({ ...row, moves });
   };
-
   const th = (key, label) => (
     <th onClick={() => { if (sort === key) setDir(dir === 'asc' ? 'desc' : 'asc'); else { setSort(key); setDir('asc'); } }}>
       {label} {sort === key ? (dir === 'asc' ? '▲' : '▼') : ''}
     </th>
   );
-
   return (
     <div className="inv-wrap">
       <div className="inv-header">
@@ -68,7 +62,6 @@ export default function AdminInventory() {
           <button onClick={runSearch}>Search</button>
         </div>
       </div>
-
       <div className="inv-table-wrap">
         <table className="inv-table">
           <thead>
@@ -108,13 +101,11 @@ export default function AdminInventory() {
           </tbody>
         </table>
       </div>
-
       <div className="inv-pager">
         <button disabled={page<=1} onClick={()=>setPage(p=>p-1)}>Prev</button>
         <span>{page}/{pages}</span>
         <button disabled={page>=pages} onClick={()=>setPage(p=>p+1)}>Next</button>
       </div>
-
       {sel && (
         <div className="inv-modal" onClick={()=>setSel(null)}>
           <div className="inv-modal-body" onClick={e=>e.stopPropagation()}>

@@ -1,12 +1,12 @@
+//Roaia Habashi and Rawan Habashi
+
 import React, { useState } from "react";
 import api from "../api/axios";
 import "./VerifyCode.css";
-
 const VerifyCode = ({ onCodeVerified, email }) => {
   const [code, setCode] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
@@ -16,7 +16,6 @@ const VerifyCode = ({ onCodeVerified, email }) => {
       setError("❌ Invalid code. Must be 6 digits.");
       return;
     }
-
     try {
       const res = await api.post("/verify-code", { email, code });
       if (res.data.message) {
@@ -32,16 +31,13 @@ const VerifyCode = ({ onCodeVerified, email }) => {
       setError(err.response?.data?.message || "❌ Server error.");
     }
   };
-
   return (
     <div className="verify-container">
       <div className="verify-box">
         <h2>Verify Code</h2>
         <p className="instruction-text">Enter the 6-digit code sent to your email.</p>
-
         {message && <div className="success-message">{message}</div>}
         {error && <div className="error-message">{error}</div>}
-
         <form onSubmit={handleSubmit}>
           <input
             type="text"
@@ -56,5 +52,4 @@ const VerifyCode = ({ onCodeVerified, email }) => {
     </div>
   );
 };
-
 export default VerifyCode;

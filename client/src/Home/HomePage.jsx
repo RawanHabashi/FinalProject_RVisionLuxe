@@ -1,6 +1,7 @@
+//Roaia Habashi and Rawan Habashi
+
 import React from 'react';
 import './HomePage.css';
-
 const HomePage = ({
   onCart,
   onWishlist,
@@ -24,7 +25,6 @@ const HomePage = ({
           />
           <h1 className="site-title">Rvision Luxe</h1>
         </div>
-
         <nav>
           <div className="nav-buttons">
             {username ? (
@@ -35,7 +35,6 @@ const HomePage = ({
         <button className="contact-btn" onClick={onContact}>Contact us</button>
         <button onClick={onMyOrders}>📦 My Orders</button>
           </div>
-
           <div className="icon-container">
             <div className="welcome-message">
         {username ? `Welcome ${username} ♡` : 'Welcome ♡'}
@@ -44,19 +43,16 @@ const HomePage = ({
               <img src="/images/cart-icon.png" alt="Cart" />
               <span className="badge">{cartCount}</span>
             </button>
-
             <button onClick={onWishlist} className="icon-link">
               <img src="/images/heart-icon.png" alt="Wishlist" />
               <span className="badge">{wishlistCount}</span>
             </button>
-
             <button className="icon-link" onClick={onSearch}>
               <img src="/images/search-icon.png" alt="Search" />
             </button>
           </div>
         </nav>
       </header>
-
       <div className="hero-section">
         <img
           src="/images/homepage-hero.jpg"
@@ -93,5 +89,4 @@ const HomePage = ({
     </div>
   );
 };
-
 export default HomePage;

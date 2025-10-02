@@ -1,39 +1,35 @@
+/*Roaia Habashi and Rawan Habashi*/
+
 .search-page {
   padding: 2rem;
   background-color: #fef4e8;
   min-height: 100vh;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
-
 .search-page h2 {
   text-align: center;
   font-size: 2rem;
   margin-bottom: 2rem;
   font-weight: bold;
 }
-
 .filters {
   display: flex;
   justify-content: center;
   gap: 20px;
   margin-bottom: 20px;
 }
-
 .filters select {
   padding: 8px;
   border-radius: 6px;
   font-size: 16px;
   min-width: 200px;
 }
-
-
 .products-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 1.5rem;
   padding: 0 2rem;
 }
-
 .product-card {
   background-color: #ffffff;
   border-radius: 12px;
@@ -42,25 +38,21 @@
   text-align: center;
   transition: transform 0.2s ease;
 }
-
 .product-card:hover {
   transform: translateY(-5px);
 }
-
 .product-card img {
   max-width: 100%;
   height: 150px;
   object-fit: contain;
   margin-bottom: 1rem;
 }
-
 .product-card h3 {
   margin: 0.5rem 0;
   font-size: 1.2rem;
   font-weight: bold;
   color: #333;
 }
-
 .product-card p {
   font-size: 1rem;
   color: #666;
@@ -89,6 +81,5 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
   white-space: nowrap;
     margin-left: 190%;
-
 }
 

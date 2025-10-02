@@ -1,4 +1,6 @@
 
+/*Roaia Habashi and Rawan Habashi*/
+
 /* ---- Theme vars ---- */
 :root{
   --bg:#FFF6EA;                /* רקע בהיר */
@@ -8,13 +10,11 @@
   --border:#eee;
   --accent:#b8865a;            /* חום-זהוב עדין לכפתורים */
   --accent-dark:#9a734c;
-
   /* צבעי כותרת הטבלה (thead) */
   --table-head-strong:#e3c2a3; /* חום נעים לכותרות */
   --table-head-ink:#5a3a10;    /* טקסט חום כהה */
   --table-head-border:#d9bfa6; /* קו תחתון רך */
 }
-
 /* ---- Page container ---- */
 .admin-orders{
   padding:20px;
@@ -23,7 +23,6 @@
   color:var(--ink);
   font-family:system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 }
-
 /* ---- Header: centered title + back on the right ---- */
 .admin-orders-header{
   position: relative;
@@ -33,14 +32,12 @@
   gap:12px;
   margin-bottom:22px;          /* רווח לפני סרגל הסינון */
 }
-
 .admin-orders-header .title{
   margin:0;
   font-size:28px;
   font-weight:700;
   text-align:center;
 }
-
 /* כפתור חזרה קטן בצד ימין י) */
 .orders-back-btn{
   position:absolute;
@@ -53,7 +50,6 @@
   width:auto !important;
   max-width:max-content;
   white-space:nowrap;
-
   /* סטייל תואם לשאר המערכת */
   background:#f7efe6;
   border:1px solid #d9bfa6;
@@ -65,10 +61,8 @@
   box-shadow:0 3px 10px rgba(0,0,0,.06);
 }
 .orders-back-btn:hover{ background:#f0e5da; }
-
 /* אם נשאר פס חזרה ישן – מסתירים */
 .admin-backbar, .backbar-btn { display: none !important; }
-
 /* ---- Filters (search + status) ---- */
 .admin-orders .filters{
   display:flex;
@@ -96,10 +90,8 @@
 }
 /* אם נשאר כפתור "Search" בקוד – מסתירים */
 .admin-orders .filters button{ display:none !important; }
-
 .error{ color:#b00020; margin:6px 0; }
 .loading{ padding:24px; }
-
 /* ---- Table ---- */
 .table-wrap{
   background:var(--card);
@@ -108,14 +100,12 @@
   overflow:auto;
   box-shadow: 0 4px 14px rgba(0,0,0,0.04);
 }
-
 /* טבלה */
 .orders-table{
   width:100%;
   border-collapse:separate;
   border-spacing:0;
 }
-
 /* כותרת הטבלה – חום נעים וקריא */
 .orders-table thead th{
   position:sticky; top:0; z-index:1;
@@ -126,29 +116,24 @@
   padding:12px;
   border-bottom:1px solid var(--table-head-border);
 }
-
 /* תאי גוף הטבלה */
 .orders-table td{
   padding:12px;
   border-bottom:1px solid var(--border);
   vertical-align:middle;
 }
-
 /* ריחוף שורה */
 .orders-table tbody tr:hover{ background:#fffdf9; }
-
 /* numeric / align helpers */
 .num{ text-align:right; font-variant-numeric: tabular-nums; }
 .right{ text-align:right; }
 .center{ text-align:center; }
-
 /* לוודא שגם ה-TH וגם ה-TD המספריים מיושרים לאותו צד */
 .orders-table th.num,
 .orders-table td.num{
   text-align: right !important;
   font-variant-numeric: tabular-nums;
 }
-
 /* פקדים בתוך הטבלה */
 .orders-table select{
   padding:8px 10px;
@@ -167,10 +152,8 @@
   font-weight:600;
 }
 .orders-table button:hover{ background:var(--accent-dark); }
-
 /* אין פאג'ינציה – מציגים הכל בעמוד אחד */
 .admin-orders .pagination{ display:none !important; }
-
 /* ---- Responsive ---- */
 @media (max-width: 900px){
   .admin-orders .filters{

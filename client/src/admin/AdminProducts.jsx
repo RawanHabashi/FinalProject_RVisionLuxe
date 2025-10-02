@@ -1,3 +1,5 @@
+//Roaia Habashi and Rawan Habashi
+
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import api from "../api/axios";
 import EditProductModal from "./EditProductModal";
@@ -9,11 +11,9 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
   const [editingProduct, setEditingProduct] = useState(null);
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState(null);
-
   // חיפוש + סינון
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-
   // טופס הוספה
   const [newProd, setNewProd] = useState({
     name: "",
@@ -24,11 +24,9 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
   });
   const [file, setFile] = useState(null);
   const fileKeyRef = useRef(0); // לאפס שדה קובץ ב-UI
-
   // helper להצגת תמונה
   const API_HOST =
     (api?.defaults?.baseURL || "http://localhost:5000").replace(/\/api\/?$/, "");
-
   const getImageSrc = (img) => {
     if (!img) return "";
     if (img.startsWith("http://") || img.startsWith("https://") || img.startsWith("/")) {
@@ -39,7 +37,6 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
     }
     return `${API_HOST}/images/${img}`;
   };
-
   /* ===================== שליפות ===================== */
   useEffect(() => {
     let alive = true;
@@ -61,7 +58,6 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
         } catch {
           if (alive) setCategories([]);
         }
-
         if (alive) setProducts(list);
       } catch (e) {
         console.error("Failed to fetch products", e);
@@ -72,13 +68,11 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
     })();
     return () => { alive = false; };
   }, [categoryId]);
-
   /* ===================== פעולות CRUD ===================== */
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this product?")) return;
     try {
       await api.delete(`/products/${id}`);
-
       // רענון
       const res = await api.get("/products");
       const list = Array.isArray(res.data) ? res.data : [];
@@ -89,7 +83,6 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
       alert("❌ Delete failed");
     }
   };
-
   const handleAdd = async (e) => {
     e.preventDefault();
     try {
@@ -97,7 +90,6 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
         alert("Please provide an image URL or upload a file.");
         return;
       }
-
       if (file) {
         const fd = new FormData();
         fd.append("name", newProd.name.trim());
@@ -116,29 +108,24 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
         if (newProd.category_id !== "") payload.category_id = Number(newProd.category_id);
         await api.post("/products", payload);
       }
-
       // איפוס
       setNewProd({ name: "", description: "", price: "", image: "", category_id: categoryId ?? "" });
       setFile(null);
       fileKeyRef.current += 1;
-
       // רענון
       const res = await api.get("/products");
       const list = Array.isArray(res.data) ? res.data : [];
       setProducts(categoryId ? list.filter(p => Number(p.category_id) === Number(categoryId)) : list);
-
       alert("✅ Product added");
     } catch (e) {
       console.error("Add failed", e);
       alert("❌ Add failed");
     }
   };
-
   const handleSaveEdit = async (payload, fileFromModal) => {
     try {
       let res;
       const id = payload.product_id ?? payload.id;
-
       if (fileFromModal) {
         const fd = new FormData();
         Object.entries(payload).forEach(([k, v]) => fd.append(k, v));
@@ -147,9 +134,7 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
       } else {
         res = await api.put(`/products/${id}`, payload);
       }
-
       if (res.status !== 200) throw new Error("Update failed");
-
       setProducts(prev =>
         prev.map(pr =>
           (pr.product_id ?? pr.id) === id ? { ...pr, ...payload } : pr
@@ -162,7 +147,6 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
       alert("❌ Update failed");
     }
   };
-
   /* ===================== סינון/חיפוש ===================== */
   const filteredProducts = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
@@ -175,7 +159,6 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
       return byName && byCat;
     });
   }, [products, searchTerm, selectedCategory]);
-
   /* ===================== UI ===================== */
   return (
     <div className="admin-products-container">
@@ -183,7 +166,6 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
         <h2> Product Management👜{categoryName ? ` in: ${categoryName}` : ""}</h2>
         <button className="back-home-btn" onClick={onBack}> Back to Admin</button>
       </div>
-
       {/* פילטרים: קטגוריה + חיפוש בשם */}
       <div className="filters-row">
         <select
@@ -204,10 +186,8 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
-
       {loading && <div className="loading">Loading products...</div>}
       {error && <div className="error">{error}</div>}
-
       {!loading && !error && (
         <table className="admin-products-table">
           <thead>
@@ -253,7 +233,6 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
           </tbody>
         </table>
       )}
-
       <div className="add-product-card">
         <h3>Add New Product{categoryName ? " to Category" : ""}</h3>
         <form onSubmit={handleAdd} className="add-product-form">
@@ -263,14 +242,12 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
             onChange={(e) => setNewProd({ ...newProd, name: e.target.value })}
             required
           />
-
           <label>Description</label>
           <input
             value={newProd.description}
             onChange={(e) => setNewProd({ ...newProd, description: e.target.value })}
             required
           />
-
           <label>Price</label>
           <input
             type="number"
@@ -280,14 +257,12 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
             onChange={(e) => setNewProd({ ...newProd, price: e.target.value })}
             required
           />
-
           <label>Image URL (optional)</label>
           <input
             value={newProd.image}
             onChange={(e) => setNewProd({ ...newProd, image: e.target.value })}
             placeholder="https://... or /uploads/file.jpg"
           />
-
           <label>Image Upload (optional)</label>
           <input
             key={fileKeyRef.current}
@@ -295,7 +270,6 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
             accept="image/*"
             onChange={(e) => setFile(e.target.files?.[0] ?? null)}
           />
-
           {categoryId == null && (
             <>
               <label>Category ID (optional)</label>
@@ -309,11 +283,9 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
               />
             </>
           )}
-
           <button type="submit" className="primary-btn">Add Product</button>
         </form>
       </div>
-
       {editingProduct && (
         <EditProductModal
           product={editingProduct}

@@ -1,10 +1,12 @@
+// Roaia Habashi and Rawan Habashi
+
 import React, { useState } from "react";
 import "./CheckoutPage.css";
 import axios from "axios";
-
-const TAX_RATE = 0.18;
-const SHIPPING = 30;
-
+// ⚠️  מחירי המוצרים כוללים מע״מ.
+// לכן ה־VAT שמוצג הוא רכיב המע״מ מתוך המחיר הכולל (18/118).
+const TAX_RATE = 0.18;   // 18%
+const SHIPPING = 30;     // משלוח קבוע 
 const CheckoutPage = ({ items = [], onBack, onOrderPlaced }) => {
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
@@ -15,56 +17,60 @@ const CheckoutPage = ({ items = [], onBack, onOrderPlaced }) => {
   const [idNumber, setIdNumber] = useState("");
   const [message, setMessage] = useState("");
 
-  const subtotal = items.reduce(
-    (sum, item) => sum + item.price * (item.quantity || 1),
+  // סכום שורות (כולל מע״מ כי item.price כולל מע״מ)
+  const subtotalInclVat = items.reduce(
+    (sum, item) => sum + (Number(item.price) || 0) * (item.quantity || 1),
     0
   );
-  const vat = subtotal * TAX_RATE;
-  const total = subtotal + vat + SHIPPING;
+
+  // רכיב המע״מ מתוך המחיר הכולל: 18/118 (באופן כללי: r / (1 + r))
+  const vatAmount = +(subtotalInclVat * (TAX_RATE / (1 + TAX_RATE))).toFixed(2);
+
+  // נטו (לפני מע״מ) – אופציונלי להצגה
+  const netBeforeVat = +(subtotalInclVat - vatAmount).toFixed(2);
+
+  // מחיר סופי ללקוחה: מוצרים (כולל מע״מ) + משלוח (לא מוסיפים VAT שוב)
+  const finalTotal = +(subtotalInclVat + SHIPPING).toFixed(2);
+
+  // עוזר לייצר תאריך-שעה לפי שעון ישראל בפורמט YYYY-MM-DD HH:mm:ss
+  function getCurrentDateTimeInIsrael() {
+    const now = new Date();
+    const offset = now.getTimezoneOffset(); // בדקות
+    const israelOffset = -180; // UTC+3 = -180 דקות
+    const diff = israelOffset - offset;
+    const israelDate = new Date(now.getTime() + diff * 60000);
+    return israelDate.toISOString().slice(0, 19).replace("T", " ");
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      const user = JSON.parse(localStorage.getItem("user"));
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
 
       if (!user?.user_id) {
         setMessage("❌ You must be logged in to place an order.");
         return;
       }
 
-      function getCurrentDateTimeInIsrael() {
-  const now = new Date();
-  const offset = now.getTimezoneOffset();
-  const israelOffset = -180;
-  const diff = israelOffset - offset;
-  const israelDate = new Date(now.getTime() + diff * 60000);
-  return israelDate.toISOString().slice(0, 19).replace("T", " ");
-}
-
-      // שליחת הזמנה לשרת
+      // 📨 יצירת הזמנה (שימי לב: total_amount = finalTotal)
       const orderRes = await axios.post("http://localhost:5000/api/orders", {
         user_id: user.user_id,
-          order_date: getCurrentDateTimeInIsrael(),
-        total_amount: total.toFixed(2),
+        order_date: getCurrentDateTimeInIsrael(),
+        total_amount: finalTotal.toFixed(2),
         status: "Pending",
       });
-
 
       const orderId = orderRes.data.order_id;
       console.log("🧾 Created order ID:", orderId);
 
-      // שליחת פריטים להזמנה
+      // 📨 יצירת פריטי הזמנה
       for (const item of items) {
-        console.log("📦 Sending item:", item);
-
         const productId = item.product_id || item.id;
         if (!productId) {
           console.error("❌ Missing product_id for item:", item);
           setMessage("❌ Failed to place order. Invalid product data.");
           return;
         }
-
         await axios.post("http://localhost:5000/api/order_items", {
           order_id: orderId,
           product_id: productId,
@@ -73,11 +79,7 @@ const CheckoutPage = ({ items = [], onBack, onOrderPlaced }) => {
       }
 
       setMessage("✅ Order placed successfully!");
-
-      // מעבר לדף סטטוס
-      setTimeout(() => {
-        onOrderPlaced(orderId);
-      }, 1500);
+      setTimeout(() => onOrderPlaced(orderId), 1200);
     } catch (err) {
       console.error("Order failed:", err);
       setMessage("❌ Failed to place order. Please try again.");
@@ -89,33 +91,50 @@ const CheckoutPage = ({ items = [], onBack, onOrderPlaced }) => {
       <button className="back-button" onClick={onBack}>
         ← Back to Cart
       </button>
+
       <h2>Closing an order</h2>
+
+      {/* טבלת פריטים */}
       <table className="summary-table">
         <thead>
           <tr>
             <th>Product</th>
             <th>Amount</th>
-            <th>Price</th>
+            <th>Unit Price (incl. VAT)</th>
+            <th>Line Total</th>
           </tr>
         </thead>
         <tbody>
-          {items.map((item, index) => (
-            <tr key={index}>
-              <td>{item.name}</td>
-              <td>x {item.quantity || 1}</td>
-              <td>{item.price * (item.quantity || 1)}₪</td>
-            </tr>
-          ))}
+          {items.map((item, index) => {
+            const qty = item.quantity || 1;
+            const unit = Number(item.price) || 0; // כולל מע״מ
+            const line = unit * qty;
+            return (
+              <tr key={index}>
+                <td>{item.name}</td>
+                <td>x {qty}</td>
+                <td>{unit.toFixed(2)}₪</td>
+                <td>{line.toFixed(2)}₪</td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
+
       <div className="layout-wrapper">
+        {/* סיכומי הזמנה (לפי לוגיקה חדשה) */}
         <div className="summary-totals">
-          <p>💼 Amount for all bags: {subtotal.toFixed(2)}₪</p>
-          <p>👜 VAT (18%): {vat.toFixed(2)}₪</p>
-          <p>🚚 Shipping: {SHIPPING}₪</p>
-          <h3>✅ Total: {total.toFixed(2)}₪</h3>
+          <p>
+            💼 Products Total (incl. VAT): {subtotalInclVat.toFixed(2)}₪
+          </p>
+          <p>🧮 VAT (18%): {vatAmount.toFixed(2)}₪</p>
+          {/* אופציונלי להצגה: נטו לפני מע״מ */}
+          <p>🧾 Products Total (net, before VAT): {netBeforeVat.toFixed(2)}₪</p>
+          <p>🚚 Shipping: {SHIPPING.toFixed(2)}₪</p>
+          <h3>✅ Final Total: {finalTotal.toFixed(2)}₪</h3>
         </div>
 
+        {/* טופס פרטי תשלום (דמה) */}
         <form className="payment-form" onSubmit={handleSubmit}>
           <h3>User information</h3>
           <input

@@ -1,3 +1,5 @@
+//Roaia Habashi and Rawan Habashi
+
 import React, { useState, useEffect } from 'react';
 import './EditUserModal.css';
 // טופס עדכון משתמש
@@ -12,24 +14,20 @@ const EditUserModal = ({ user, onClose, onSave }) => {
     email: user?.email ?? '',
     password: '' // השארת ריק פירושה לא משנים סיסמה
   });
-
   // סגירה בלחיצה על Esc
   useEffect(() => {
     const onKey = (e) => e.key === 'Escape' && onClose();
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
-
   // שינוי שדות הטופס
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUpdatedUser((prev) => ({ ...prev, [name]: value }));
   };
-
   // שליחה
   const handleSubmit = (e) => {
     e.preventDefault();
-
     // ודאו שיש מזהה
     if (!updatedUser.user_id) {
       alert('❌ Missing user_id');
@@ -39,15 +37,12 @@ const EditUserModal = ({ user, onClose, onSave }) => {
     // לא שולחים password אם נשאר ריק
     const payload = { ...updatedUser };
     if (!payload.password) delete payload.password;
-
     onSave(payload);
   };
-
   // סגירה בלחיצה על הרקע
   const handleBackdrop = (e) => {
     if (e.target.classList.contains('modal-backdrop')) onClose();
   };
-
   return (
     <div className="modal-backdrop" onClick={handleBackdrop}>
       <div className="modal" role="dialog" aria-modal="true" aria-labelledby="edit-user-title">
@@ -60,7 +55,6 @@ const EditUserModal = ({ user, onClose, onSave }) => {
             onChange={handleChange}
             required
           />
-
           <label>Email:</label>
           <input
             name="email"
@@ -69,7 +63,6 @@ const EditUserModal = ({ user, onClose, onSave }) => {
             onChange={handleChange}
             required
           />
-
           <label>Password (optional):</label>
           <input
             name="password"
@@ -78,7 +71,6 @@ const EditUserModal = ({ user, onClose, onSave }) => {
             onChange={handleChange}
             placeholder="Leave blank to keep current"
           />
-
           <div className="modal-actions">
             <button type="submit">Save</button>
             <button type="button" onClick={onClose}>Cancel</button>
@@ -88,5 +80,4 @@ const EditUserModal = ({ user, onClose, onSave }) => {
     </div>
   );
 };
-
 export default EditUserModal;
