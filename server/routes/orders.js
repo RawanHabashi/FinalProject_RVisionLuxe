@@ -330,10 +330,15 @@ router.patch('/:id/status', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const db = await initDb();
-    const { user_id, order_date, total_amount, status } = req.body;
+    const { user_id, order_date, total_amount, status,payment_method } = req.body;
+    if (!user_id || !order_date || !total_amount || !status) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+    const ALLOWED_PM = ['Card', 'PayPal'];
+    const pm = ALLOWED_PM.includes(payment_method) ? payment_method : null;
     const [result] = await db.query(
-      'INSERT INTO orders (user_id, order_date, total_amount, status) VALUES (?, ?, ?, ?)',
-      [user_id, order_date, total_amount, status]
+      'INSERT INTO orders (user_id, order_date, total_amount, status, payment_method) VALUES (?, ?, ?, ?, ?)',
+      [user_id, order_date, total_amount, status, pm]
     );
     res.json({ message: 'Order added successfully', order_id: result.insertId });
   } catch (err) {

@@ -1,16 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import App from './App';
-import { BrowserRouter } from 'react-router-dom'; 
+import { BrowserRouter } from 'react-router-dom';
+console.log("PAYPAL ID:", process.env.REACT_APP_PAYPAL_CLIENT_ID);
+
+const initialOptions = {
+  "client-id":process.env.REACT_APP_PAYPAL_CLIENT_ID,
+  currency: "ILS",
+  intent: "capture",
+  components: "buttons",   
+};
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <BrowserRouter>
-    <App />
+    <PayPalScriptProvider options={initialOptions}>
+      <App />
+    </PayPalScriptProvider>
   </BrowserRouter>
 );
-
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
