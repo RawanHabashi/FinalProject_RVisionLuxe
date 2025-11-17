@@ -36,13 +36,18 @@ const CheckoutPage = ({ items = [], onBack, onOrderPlaced }) => {
 
   // ===== עוזר: תאריך-שעה ישראל בפורמט DB =====
   function getCurrentDateTimeInIsrael() {
-    const now = new Date();
-    const offset = now.getTimezoneOffset();
-    const israelOffset = -180; // UTC+3
-    const diff = israelOffset - offset;
-    const israelDate = new Date(now.getTime() + diff * 60000);
-    return israelDate.toISOString().slice(0, 19).replace("T", " ");
-  }
+  const now = new Date();
+  // הזזת הזמן לשעון ישראל (UTC+3)
+  const israelTime = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Jerusalem" }));
+  const year = israelTime.getFullYear();
+  const month = String(israelTime.getMonth() + 1).padStart(2, "0");
+  const day = String(israelTime.getDate()).padStart(2, "0");
+  const hours = String(israelTime.getHours()).padStart(2, "0");
+  const minutes = String(israelTime.getMinutes()).padStart(2, "0");
+  const seconds = String(israelTime.getSeconds()).padStart(2, "0");
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
 
   // ===== ולידציה בסיסית לשדות המשתמש והסל =====
   function validateUserAndCart() {
@@ -123,7 +128,7 @@ const CheckoutPage = ({ items = [], onBack, onOrderPlaced }) => {
     try {
       const orderId = await createOrderInDb({
         user_id: user.user_id,
-        status: "Paid",
+        status: "Pending",
         payment_method: "PayPal",
       });
       setMessage("✅ Payment approved via PayPal. Order saved.");

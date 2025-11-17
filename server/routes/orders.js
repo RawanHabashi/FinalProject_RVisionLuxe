@@ -249,6 +249,75 @@ const finalTotal = totals.final_total;
     res.status(500).send('Error generating invoice');
   }
 });
+
+// ✅ כל ההזמנות לממשק המנהל (עם פרטי לקוח בסיסיים)
+router.get('/', async (req, res) => {
+  try {
+    const db = await initDb();
+
+    const {
+      q = '',        // טקסט חופשי לחיפוש (לא חובה)
+      status = '',   // סינון לפי סטטוס
+      page = 1,
+      limit = 100000,
+    } = req.query;
+
+    const offset = (page - 1) * limit;
+
+    let where = '1=1';
+    const params = [];
+
+    // 🟡 נרמול ערך הסטטוס
+    const normalizedStatus = String(status).trim();
+
+    // 🟡 במקרה שהסטטוס הוא "All statuses" — לא מסננים בכלל!
+    if (
+      normalizedStatus &&
+      normalizedStatus !== 'All' &&
+      normalizedStatus !== 'All statuses'
+    ) {
+      where += ' AND o.status = ?';
+      params.push(normalizedStatus);
+    }
+
+    // 🔍 חיפוש לפי שם / מייל / מספר הזמנה
+    if (q) {
+      where += ' AND (u.name LIKE ? OR u.email LIKE ? OR o.order_id LIKE ?)';
+      params.push(`%${q}%`, `%${q}%`, `%${q}%`);
+    }
+
+    // 📌 שליפת כל ההזמנות + פרטי לקוח מינימליים
+    const [rows] = await db.query(
+      `
+      SELECT
+        o.order_id,
+        o.user_id,
+        o.order_date,
+        o.total_amount,
+        o.status,
+        o.payment_method,
+        u.name  AS customer_name,
+        u.email AS customer_email
+      FROM orders o
+      LEFT JOIN users u ON o.user_id = u.user_id
+      WHERE ${where}
+      ORDER BY o.order_date DESC
+      LIMIT ? OFFSET ?
+      `,
+      [...params, Number(limit), Number(offset)]
+    );
+
+    // 📌 הממשק מצפה לשדה orders
+    res.json({ orders: rows });
+
+  } catch (err) {
+    console.error('❌ Error fetching admin orders:', err);
+    res.status(500).json({ error: 'Failed to fetch orders' });
+  }
+});
+
+
+ 
 // ✅ שליפת הזמנה בודדת לפי order_id
 router.get('/:id', async (req, res) => {
   const orderId = req.params.id;

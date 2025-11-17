@@ -17,6 +17,7 @@ import ProductsPage from './products/ProductsPage';
 import SearchPage from './Search/SearchPage';
 import ContactUs from "./ContactUs/ContactUsPage";
 import CheckoutPage from "./Checkout/CheckoutPage";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import OrdersInformation from "./OrdersInformation/OrdersInformation";
 function App() {
   const [view, setView] = useState("home");
@@ -195,15 +196,24 @@ function App() {
       )}
 
       {view === "checkout" && (
-        <CheckoutPage
-          items={cartItems}
-          onBack={() => goTo("cart")}
-          onOrderPlaced={(orderId) => {
-            setLastOrderId(orderId);
-            goTo("orderStatus");
-          }}
-        />
-      )}
+  <PayPalScriptProvider
+    options={{
+      "client-id": "AWBJ5wOe_H1_wk5VxlNNFpLlgvRDFbfejr3A2KOPoR5IUZsH2nq52qBJ-ma6CZyCSSqyxz0Vb95WpisO", 
+      currency: "ILS",
+      "disable-funding": "card",
+    }}
+  >
+    <CheckoutPage
+      items={cartItems}
+      onBack={() => goTo("cart")}
+      onOrderPlaced={(orderId) => {
+        setLastOrderId(orderId);
+        goTo("orderStatus");
+      }}
+    />
+  </PayPalScriptProvider>
+)}
+
 
       {view === "ordersInfo" && (
         <OrdersInformation userId={currentUserId} onBack={() => goTo("home")} />

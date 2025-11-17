@@ -18,24 +18,27 @@ export default function AdminOrders({ onBack = () => {} }) {
   const [errorMsg, setErrorMsg] = useState("");
   // פונקציית טעינה שמקבלת אופציונלית override לפרמטרים
   const fetchOrders = async (overrides = {}) => {
-    setLoading(true);
-    setErrorMsg("");
-    try {
-      const params = {
-        q:      overrides.q      ?? q,
-        status: overrides.status ?? status,
-        page: 1,
-        limit: LIMIT_ALL,
-      };
-      const { data } = await api.get("/orders", { params });
-      setOrders(Array.isArray(data?.data) ? data.data : []);
-    } catch (err) {
-      console.error("Failed to load orders", err);
-      setErrorMsg("Failed to load orders.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  setLoading(true);
+  setErrorMsg("");
+  try {
+    const params = {
+      q:      overrides.q      ?? q,
+      status: overrides.status ?? status,
+      page: 1,
+      limit: LIMIT_ALL,
+    };
+
+    const { data } = await api.get("/orders", { params });
+
+    setOrders(Array.isArray(data?.orders) ? data.orders : []);
+  } catch (err) {
+    console.error("Failed to load orders", err);
+    setErrorMsg("Failed to load orders.");
+  } finally {
+    setLoading(false);
+  }
+};
+
   // טעינה ראשונית
   useEffect(() => { fetchOrders(); /* eslint-disable-next-line */ }, []);
   // חיפוש עם Enter בלבד
