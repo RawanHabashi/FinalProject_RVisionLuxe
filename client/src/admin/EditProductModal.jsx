@@ -53,11 +53,11 @@ const EditProductModal = ({ product, onClose, onSave }) => {
           <input name="description" value={form.description} onChange={handleChange} required />
           <label>Price</label>
           <input name="price" type="number" min="0" step="1" value={form.price} onChange={handleChange} required />
-          <label>Image URL (optional)</label>
+          <label>Image URL </label>
           <input name="image" value={form.image} onChange={handleChange} placeholder="https://... or /uploads/file.jpg" />
           <label>Replace Image (optional)</label>
           <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
-          <label>Category ID (optional)</label>
+          <label>Category ID </label>
           <input name="category_id" type="number" min="1" step="1" value={form.category_id ?? ""} onChange={handleChange} />
           <div className="modal-actions">
             <button type="submit">Save</button>

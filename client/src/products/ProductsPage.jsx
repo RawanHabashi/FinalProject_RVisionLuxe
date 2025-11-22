@@ -49,7 +49,7 @@ const ProductsPage = ({ onAddToCart, onBack, category, onWishlistChange, current
       case 'daily': return 'Daily Bags';
       case 'travel': return 'Travel Bags';
       case 'brand': return 'Brand Bags';
-      case 'wallet': return 'Wallets';
+      case 'wallet': return 'Wallet';
       default: return 'All Products';
     }
   };

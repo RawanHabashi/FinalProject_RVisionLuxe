@@ -4,16 +4,20 @@ import React, { useEffect, useRef, useState, useMemo } from "react";
 import api from "../api/axios";
 import EditProductModal from "./EditProductModal";
 import "./AdminProducts.css";
+
 //ניהול מוצרים
 export default function AdminProducts({ onBack = () => {}, categoryId, categoryName }) {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);  // ← לשורת הסינון לפי קטגוריה
   const [editingProduct, setEditingProduct] = useState(null);
+  const [productToDelete, setProductToDelete] = useState(null); // מוצר למחיקה (מודל)
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState(null);
+
   // חיפוש + סינון
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+
   // טופס הוספה
   const [newProd, setNewProd] = useState({
     name: "",
@@ -24,6 +28,7 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
   });
   const [file, setFile] = useState(null);
   const fileKeyRef = useRef(0); // לאפס שדה קובץ ב-UI
+
   // helper להצגת תמונה
   const API_HOST =
     (api?.defaults?.baseURL || "http://localhost:5000").replace(/\/api\/?$/, "");
@@ -37,6 +42,7 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
     }
     return `${API_HOST}/images/${img}`;
   };
+
   /* ===================== שליפות ===================== */
   useEffect(() => {
     let alive = true;
@@ -68,21 +74,49 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
     })();
     return () => { alive = false; };
   }, [categoryId]);
-  /* ===================== פעולות CRUD ===================== */
-  const handleDelete = async (id) => {
-    if (!window.confirm("Delete this product?")) return;
+
+  /* ===================== מחיקה – מודל מותאם ===================== */
+
+  const openDeleteModal = (product) => {
+    setProductToDelete(product);
+  };
+
+  const closeDeleteModal = () => {
+    setProductToDelete(null);
+  };
+
+  const handleDeleteBackdrop = (e) => {
+    if (e.target.classList.contains("product-delete-backdrop")) {
+      closeDeleteModal();
+    }
+  };
+
+  const confirmDelete = async () => {
+    if (!productToDelete) return;
+    const id = productToDelete.product_id ?? productToDelete.id;
+
     try {
       await api.delete(`/products/${id}`);
+
       // רענון
       const res = await api.get("/products");
       const list = Array.isArray(res.data) ? res.data : [];
-      setProducts(categoryId ? list.filter(p => Number(p.category_id) === Number(categoryId)) : list);
+      setProducts(
+        categoryId
+          ? list.filter((p) => Number(p.category_id) === Number(categoryId))
+          : list
+      );
+
+      setProductToDelete(null);
       alert("✅ Product deleted");
     } catch (e) {
       console.error("Delete failed", e);
       alert("❌ Delete failed");
     }
   };
+
+  /* ===================== פעולות CRUD אחרות ===================== */
+
   const handleAdd = async (e) => {
     e.preventDefault();
     try {
@@ -115,13 +149,18 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
       // רענון
       const res = await api.get("/products");
       const list = Array.isArray(res.data) ? res.data : [];
-      setProducts(categoryId ? list.filter(p => Number(p.category_id) === Number(categoryId)) : list);
+      setProducts(
+        categoryId
+          ? list.filter((p) => Number(p.category_id) === Number(categoryId))
+          : list
+      );
       alert("✅ Product added");
     } catch (e) {
       console.error("Add failed", e);
       alert("❌ Add failed");
     }
   };
+
   const handleSaveEdit = async (payload, fileFromModal) => {
     try {
       let res;
@@ -147,6 +186,7 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
       alert("❌ Update failed");
     }
   };
+
   /* ===================== סינון/חיפוש ===================== */
   const filteredProducts = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
@@ -159,6 +199,7 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
       return byName && byCat;
     });
   }, [products, searchTerm, selectedCategory]);
+
   /* ===================== UI ===================== */
   return (
     <div className="admin-products-container">
@@ -166,18 +207,21 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
         <h2> Product Management👜{categoryName ? ` in: ${categoryName}` : ""}</h2>
         <button className="back-home-btn" onClick={onBack}> Back to Admin</button>
       </div>
+
       {/* פילטרים: קטגוריה + חיפוש בשם */}
       <div className="filters-row">
         <select
-     className="filter-select" value={selectedCategory}
-    onChange={(e) => setSelectedCategory(e.target.value)}>
-      <option value="all">All categories</option>
-     {categories.map((c) => (
-     <option key={c.category_id} value={c.category_id}>
-      {c.name}
-    </option>
-   ))}
-</select>
+          className="filter-select"
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+        >
+          <option value="all">All categories</option>
+          {categories.map((c) => (
+            <option key={c.category_id} value={c.category_id}>
+              {c.name}
+            </option>
+          ))}
+        </select>
         <input
           className="search-input"
           type="text"
@@ -186,8 +230,10 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
+
       {loading && <div className="loading">Loading products...</div>}
       {error && <div className="error">{error}</div>}
+
       {!loading && !error && (
         <table className="admin-products-table">
           <thead>
@@ -220,11 +266,16 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
                     <td>{p.name}</td>
                     <td>{p.description}</td>
                     <td className="price">
-                   {Number.isFinite(price) ? `${price.toFixed(0)}₪` : "-"}
-                  </td>
+                      {Number.isFinite(price) ? `${price.toFixed(0)}₪` : "-"}
+                    </td>
                     <td className="actions-cell">
                       <button onClick={() => setEditingProduct(p)} className="edit-btn">Edit</button>
-                      <button className="delete-btn" onClick={() => handleDelete(id)}>Delete</button>
+                      <button
+                        className="delete-btn"
+                        onClick={() => openDeleteModal(p)}
+                      >
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 );
@@ -233,6 +284,7 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
           </tbody>
         </table>
       )}
+
       <div className="add-product-card">
         <h3>Add New Product{categoryName ? " to Category" : ""}</h3>
         <form onSubmit={handleAdd} className="add-product-form">
@@ -241,12 +293,14 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
             value={newProd.name}
             onChange={(e) => setNewProd({ ...newProd, name: e.target.value })}
             required
+          placeholder="Enter The Name"
           />
           <label>Description</label>
           <input
             value={newProd.description}
             onChange={(e) => setNewProd({ ...newProd, description: e.target.value })}
             required
+           placeholder="Enter The Description"
           />
           <label>Price</label>
           <input
@@ -256,6 +310,7 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
             value={newProd.price}
             onChange={(e) => setNewProd({ ...newProd, price: e.target.value })}
             required
+             placeholder="Enter The Price"
           />
           <label>Image URL (optional)</label>
           <input
@@ -279,19 +334,52 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
                 step="1"
                 value={newProd.category_id}
                 onChange={(e) => setNewProd({ ...newProd, category_id: e.target.value })}
-                placeholder="e.g. 1"
+                placeholder="ID"
               />
             </>
           )}
           <button type="submit" className="primary-btn">Add Product</button>
         </form>
       </div>
+
       {editingProduct && (
         <EditProductModal
           product={editingProduct}
           onClose={() => setEditingProduct(null)}
           onSave={handleSaveEdit}
         />
+      )}
+
+      {/* מודל מחיקת מוצר */}
+      {productToDelete && (
+        <div
+          className="product-delete-backdrop"
+          onClick={handleDeleteBackdrop}
+        >
+          <div className="product-delete-modal" role="dialog" aria-modal="true">
+            <h3>Delete Product</h3>
+            <p>Are you sure you want to delete this product?</p>
+            <div className="product-delete-info">
+              <strong>{productToDelete.name}</strong>
+            </div>
+            <div className="product-delete-actions">
+              <button
+                type="button"
+                className="cancel-delete-btn"
+                onClick={closeDeleteModal}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="confirm-delete-btn"
+                onClick={confirmDelete}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

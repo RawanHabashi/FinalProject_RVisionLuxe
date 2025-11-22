@@ -1,60 +1,74 @@
-//Roaia Habashi and Rawan Habashi
+// Roaia Habashi and Rawan Habashi
 
 import React, { useState, useEffect } from 'react';
 import './EditUserModal.css';
+
 // טופס עדכון משתמש
-  // לא טוען סיסמה קיימת (מונע דריסה בלי כוונה)
-   // אם הסיסמה נשארת ריקה, לא נשלח אותה בעדכון
-   //סגירה בלחיצה על הרקע/לחיצה על Esc
+// בלי עריכת סיסמה, כולל הצגת ID, Name, Email, Phone, Location, Role
+// סגירה בלחיצה על הרקע / לחיצה על Esc
 const EditUserModal = ({ user, onClose, onSave }) => {
-  // מצב מקומי למשתמש/ת המעודכן/ת
   const [updatedUser, setUpdatedUser] = useState({
     user_id: user?.user_id ?? user?.id ?? null,
     name: user?.name ?? '',
     email: user?.email ?? '',
-    password: '' // השארת ריק פירושה לא משנים סיסמה
+    phone_number: user?.phone_number ?? '',
+    location: user?.location ?? '',
+    role: user?.role ?? 'customer',
   });
+
   // סגירה בלחיצה על Esc
   useEffect(() => {
     const onKey = (e) => e.key === 'Escape' && onClose();
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
+
   // שינוי שדות הטופס
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUpdatedUser((prev) => ({ ...prev, [name]: value }));
   };
+
   // שליחה
   const handleSubmit = (e) => {
     e.preventDefault();
-    // ודאו שיש מזהה
+
     if (!updatedUser.user_id) {
       alert('❌ Missing user_id');
       return;
     }
 
-    // לא שולחים password אם נשאר ריק
-    const payload = { ...updatedUser };
-    if (!payload.password) delete payload.password;
-    onSave(payload);
+    // שולחים רק את השדות הרלוונטיים (בלי סיסמה)
+    onSave(updatedUser);
   };
+
   // סגירה בלחיצה על הרקע
   const handleBackdrop = (e) => {
     if (e.target.classList.contains('modal-backdrop')) onClose();
   };
+
   return (
     <div className="modal-backdrop" onClick={handleBackdrop}>
       <div className="modal" role="dialog" aria-modal="true" aria-labelledby="edit-user-title">
         <h3 id="edit-user-title">Edit User</h3>
+
         <form onSubmit={handleSubmit}>
-          <label>Full Name:</label>
+          {/* ID – לתצוגה בלבד */}
+          <label>User ID:</label>
+          <input
+            value={updatedUser.user_id ?? ''}
+            disabled
+            className="readonly-input"
+          />
+
+          <label>Name:</label>
           <input
             name="name"
             value={updatedUser.name}
             onChange={handleChange}
             required
           />
+
           <label>Email:</label>
           <input
             name="email"
@@ -63,14 +77,31 @@ const EditUserModal = ({ user, onClose, onSave }) => {
             onChange={handleChange}
             required
           />
-          <label>Password (optional):</label>
+
+          <label>Phone:</label>
           <input
-            name="password"
-            type="password"
-            value={updatedUser.password}
+            name="phone_number"
+            value={updatedUser.phone_number}
             onChange={handleChange}
-            placeholder="Leave blank to keep current"
           />
+
+          <label>Location:</label>
+          <input
+            name="location"
+            value={updatedUser.location}
+            onChange={handleChange}
+          />
+
+          <label>Role:</label>
+          <select
+            name="role"
+            value={updatedUser.role}
+            onChange={handleChange}
+          >
+            <option value="customer">Customer</option>
+            <option value="admin">Admin</option>
+          </select>
+
           <div className="modal-actions">
             <button type="submit">Save</button>
             <button type="button" onClick={onClose}>Cancel</button>
@@ -80,4 +111,5 @@ const EditUserModal = ({ user, onClose, onSave }) => {
     </div>
   );
 };
+
 export default EditUserModal;

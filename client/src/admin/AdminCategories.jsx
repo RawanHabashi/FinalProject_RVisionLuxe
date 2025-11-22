@@ -1,37 +1,71 @@
-//Roaia Habashi and Rawan Habashi
+// Roaia Habashi and Rawan Habashi
 
 import React, { useEffect, useMemo, useState } from "react";
 import api from "../api/axios";
 import CategoryModal from "./CategoryModal";
 import "./AdminCategories.css";
-//ניהטל כטגוריות
+
+// ניהול קטגוריות
 export default function AdminCategories({ onBack = () => {} }) {
   const [categories, setCategories] = useState([]);
-  const [usageMap, setUsageMap] = useState({}); 
+  const [usageMap, setUsageMap] = useState({});
   const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState(null);
+  const [error, setError] = useState(null);
+
   const [editingCat, setEditingCat] = useState(null);
   const [adding, setAdding] = useState(false);
+
   // עוזר להצגת תמונה
-  const API_HOST = (api?.defaults?.baseURL || "http://localhost:5000").replace(/\/api\/?$/, "");
+  const API_HOST = (api?.defaults?.baseURL || "http://localhost:5000").replace(
+    /\/api\/?$/,
+    ""
+  );
+
   const getImageSrc = (img) => {
     if (!img) return "";
-    if (img.startsWith("http://") || img.startsWith("https://") || img.startsWith("/")) return img;
-    if (img.startsWith("uploads/") || img.startsWith("images/")) return `${API_HOST}/${img}`;
+    if (img.startsWith("http://") || img.startsWith("https://") || img.startsWith("/"))
+      return img;
+    if (img.startsWith("uploads/") || img.startsWith("images/"))
+      return `${API_HOST}/${img}`;
     return `${API_HOST}/images/${img}`;
   };
+
+  // פונקציה שמיישרת את השדות מה-DB לצורה נוחה בצד לקוח
+  const normalizeCategory = (row) => {
+    const id = row.category_id ?? row.id;
+    const name = row.category_name ?? row.name;
+    const image = row.image_url ?? row.image;
+
+    return {
+      ...row,
+      id,
+      name,
+      image,
+    };
+  };
+
   const fetchAll = async () => {
-    setLoading(true); setError(null);
+    setLoading(true);
+    setError(null);
     try {
       const [catRes, useRes] = await Promise.all([
         api.get("/categories"),
         api.get("/categories/in-use-map").catch(() => ({ data: [] })),
       ]);
-      const cats = Array.isArray(catRes.data) ? catRes.data : [];
+
+      const catsArr = Array.isArray(catRes.data) ? catRes.data : [];
+      const normalizedCats = catsArr.map(normalizeCategory);
+
       const useArr = Array.isArray(useRes.data) ? useRes.data : [];
       const map = {};
-      useArr.forEach((r) => { if (r.category_id != null) map[r.category_id] = Number(r.count) || 0; });
-      setCategories(cats);
+
+      useArr.forEach((r) => {
+        if (r.category_id != null) {
+          map[r.category_id] = Number(r.count) || 0;
+        }
+      });
+
+      setCategories(normalizedCats);
       setUsageMap(map);
     } catch (e) {
       console.error(e);
@@ -40,12 +74,18 @@ export default function AdminCategories({ onBack = () => {} }) {
       setLoading(false);
     }
   };
-  useEffect(() => { fetchAll(); }, []);
+
+  useEffect(() => {
+    fetchAll();
+  }, []);
+
   const isInUse = (id) => (usageMap?.[id] ?? 0) > 0;
+
   const handleDelete = async (id) => {
     try {
-      // בדיקה פר-קטגוריה (למקרה שהמפה לא עדכנית)
       let count = usageMap?.[id] ?? undefined;
+
+      // לוודא מהשרת שהקטגוריה לא בשימוש
       if (count === undefined) {
         const chk = await api.get(`/categories/${id}/in-use`);
         count = chk.data?.count ?? 0;
@@ -54,14 +94,18 @@ export default function AdminCategories({ onBack = () => {} }) {
         alert(`אי אפשר למחוק: בקטגוריה יש ${count} מוצרים.`);
         return;
       }
+
       if (!window.confirm("Delete this category?")) return;
+
       await api.delete(`/categories/${id}`);
-      setCategories((prev) => prev.filter((c) => (c.category_id ?? c.id) !== id));
+
+      setCategories((prev) => prev.filter((c) => c.id !== id));
       setUsageMap((prev) => {
         const next = { ...prev };
         delete next[id];
         return next;
       });
+
       alert("✅ Category deleted");
     } catch (e) {
       console.error(e);
@@ -72,55 +116,81 @@ export default function AdminCategories({ onBack = () => {} }) {
       }
     }
   };
+
+  // כאן חשוב: payload שיגיע מה-Modal כולל id, name, image_url (אופציונלי)
   const handleSave = async (payload, file) => {
-    try {
-      const isEdit = !!payload.category_id || !!payload.id;
-      const id = payload.category_id ?? payload.id;
-      if (file) {
-        const fd = new FormData();
-        Object.entries(payload).forEach(([k, v]) => fd.append(k, v ?? ""));
-        fd.append("image", file);
-        if (isEdit) await api.put(`/categories/${id}`, fd);
-        else        await api.post("/categories", fd);
-      } else {
-        if (isEdit) await api.put(`/categories/${id}`, payload);
-        else        await api.post("/categories", payload);
-      }
-      await fetchAll();
-      setEditingCat(null);
-      setAdding(false);
-      alert("✅ Saved");
-    } catch (e) {
-      console.error(e);
-      alert("❌ Save failed");
+  try {
+    const isEdit = !!payload.id;   // אם יש id – זו עריכה
+    const id = payload.id;
+
+    // תמיד נשתמש ב-FormData, גם בהוספה וגם בעריכה
+    const fd = new FormData();
+
+    // השם שהמשתמשת הקלידה
+    fd.append("name", payload.name);
+
+    // אם הזנת ידנית שם קובץ/URL
+    if (payload.image_url) {
+      fd.append("image_url", payload.image_url);
     }
-  };
+
+    // אם בחרת קובץ – נוסיף אותו
+    if (file) {
+      fd.append("image", file); // אותו שם שדה כמו ב-multer: upload.single("image")
+    }
+
+    if (isEdit) {
+      await api.put(`/categories/${id}`, fd);
+    } else {
+      await api.post("/categories", fd);
+    }
+
+    await fetchAll();
+    setEditingCat(null);
+    setAdding(false);
+    alert("✅ Saved");
+  } catch (e) {
+    console.error(e);
+    alert("❌ Save failed");
+  }
+};
+
+
   // מיון לפי שם
   const sortedCategories = useMemo(() => {
     return [...categories].sort((a, b) =>
       String(a.name || "").localeCompare(String(b.name || ""))
     );
   }, [categories]);
+
   return (
     <div className="admin-cats">
       <div className="admin-cats-header">
-        <h2 className="cats-title"> Category Management🗂️</h2>
-        <button className="cats-back-btn"  onClick={onBack}> Back to Admin</button>
+        <h2 className="cats-title">Category Management🗂️</h2>
+        <button className="cats-back-btn" onClick={onBack}>
+          Back to Admin
+        </button>
       </div>
+
       <div className="toolbar">
-        <button className="add-btn" onClick={() => setAdding(true)}>Add a new category +</button>
+        <button className="add-btn" onClick={() => setAdding(true)}>
+          Add a new category +
+        </button>
       </div>
+
       {loading && <div className="loading">Loading...</div>}
       {error && <div className="error">{error}</div>}
+
       {!loading && !error && (
         <div className="grid">
           {sortedCategories.length === 0 ? (
             <div className="empty">No categories yet.</div>
           ) : (
             sortedCategories.map((c) => {
-              const id = c.category_id ?? c.id;
+              const id = c.id;
               const used = isInUse(id);
               const count = usageMap?.[id] ?? 0;
+
               return (
                 <div className={`card ${used ? "card-used" : ""}`} key={id}>
                   <div className="img-wrap">
@@ -130,20 +200,38 @@ export default function AdminCategories({ onBack = () => {} }) {
                       <div className="noimg">No image</div>
                     )}
                   </div>
+
                   <div className="title-row">
                     <div className="title">{c.name}</div>
-                    {used && <span className="badge-used" title={`${count} product(s)`}>Has products</span>}
+                    {used && (
+                      <span
+                        className="badge-used"
+                        title={`${count} product(s)`}
+                      >
+                        Has products
+                      </span>
+                    )}
                   </div>
+
                   <div className="actions">
                     <button
                       className="danger"
                       disabled={used}
-                      title={used ? "Cannot delete a category that has products" : ""}
+                      title={
+                        used
+                          ? "Cannot delete a category that has products"
+                          : ""
+                      }
                       onClick={() => handleDelete(id)}
                     >
                       delete
                     </button>
-                    <button className="secondary" onClick={() => setEditingCat(c)}>update</button>
+                    <button
+                      className="secondary"
+                      onClick={() => setEditingCat(c)}
+                    >
+                      update
+                    </button>
                   </div>
                 </div>
               );
@@ -151,6 +239,7 @@ export default function AdminCategories({ onBack = () => {} }) {
           )}
         </div>
       )}
+
       {adding && (
         <CategoryModal
           mode="add"
@@ -158,6 +247,7 @@ export default function AdminCategories({ onBack = () => {} }) {
           onSave={handleSave}
         />
       )}
+
       {editingCat && (
         <CategoryModal
           mode="edit"

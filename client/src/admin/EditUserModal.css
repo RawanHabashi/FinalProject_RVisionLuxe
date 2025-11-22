@@ -17,9 +17,12 @@
   background-color: #e1ad6d;
   padding: 2rem;
   border-radius: 12px;
-  width: 400px;
+  width: 420px;
+  max-height: 90vh;       /* חשוב – המודל לא יחרוג מהמסך */
+  overflow-y: auto;       /* אם יש יותר מדי תוכן – מופיע scroll */
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
+
 
 .modal h3 {
   margin-bottom: 1.5rem;
@@ -71,4 +74,9 @@
 .modal-actions button[type="button"] {
   background-color: #e0e0e0;
   color: #333;
+}
+.readonly-input {
+  background-color: #f4f4f4;
+  color: #777;
+  cursor: not-allowed;
 }

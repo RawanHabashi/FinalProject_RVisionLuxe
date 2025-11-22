@@ -67,43 +67,82 @@ router.get('/:id/in-use', async (req, res) => {
 router.post('/', upload.single('image'), async (req, res) => {
   try {
     const db = await getDb();
-    const { name, image } = req.body;
-    if (!name?.trim()) return res.status(400).json({ message: 'name is required' });
 
+    // מקבלים גם image_url וגם image (לטובת תאימות)
+    const { name, image, image_url } = req.body;
+
+    if (!name?.trim()) {
+      return res.status(400).json({ message: 'name is required' });
+    }
+
+    // בוחר מה לשמור:
+    // 1. אם יש קובץ שהועלה → uploads/filename
+    // 2. אחרת אם נשלח image_url או image מהטופס
+    const rawImage = image_url ?? image;
     const imageValue = req.file
       ? `uploads/${req.file.filename}`
-      : (image?.trim() || null);
+      : (rawImage?.trim() || null);
 
     await db.query(
       'INSERT INTO categories (category_name, image_url) VALUES (?, ?)',
       [name.trim(), imageValue]
     );
+
     res.sendStatus(201);
   } catch (err) {
     console.error('❌ Create category error:', err.message);
     res.status(500).json({ message: 'Create failed' });
   }
 });
-/* ========= PUT: עדכון קטגוריה (JSON או multipart) ========= */
+
+//* ========= PUT: עדכון קטגוריה (JSON או multipart) ========= */
 router.put('/:id', upload.single('image'), async (req, res) => {
   try {
     const db = await getDb();
     const { id } = req.params;
-    const { name, image } = req.body;
-    const imageValue = req.file ? `uploads/${req.file.filename}` : (image ?? undefined);
+
+    // גם כאן נקבל image_url וגם image
+    const { name, image, image_url } = req.body;
+    const rawImage = image_url ?? image;
+
+    // אם יש קובץ חדש – נעדכן איתו
+    // אחרת נשתמש בערך שהגיע מהטופס (אם בכלל הגיע)
+    const imageValue = req.file
+      ? `uploads/${req.file.filename}`
+      : (rawImage !== undefined ? (rawImage || null) : undefined);
+
     const fields = [];
     const values = [];
-    if (name != null)             { fields.push('category_name=?'); values.push(name); }
-    if (imageValue !== undefined) { fields.push('image_url=?');     values.push(imageValue || null); }
-    if (!fields.length) return res.status(400).json({ message: 'No fields to update' });
+
+    if (name != null) {
+      fields.push('category_name=?');
+      values.push(name.trim());
+    }
+
+    // נשים image_url רק אם הגיע ערך (או null) – אם לא הגיע בכלל, לא נעדכן את השדה הזה
+    if (imageValue !== undefined) {
+      fields.push('image_url=?');
+      values.push(imageValue);
+    }
+
+    if (!fields.length) {
+      return res.status(400).json({ message: 'No fields to update' });
+    }
+
     values.push(id);
-    await db.query(`UPDATE categories SET ${fields.join(', ')} WHERE category_id=?`, values);
+
+    await db.query(
+      `UPDATE categories SET ${fields.join(', ')} WHERE category_id=?`,
+      values
+    );
+
     res.sendStatus(200);
   } catch (err) {
     console.error('❌ Update category error:', err.message);
     res.status(500).json({ message: 'Update failed' });
   }
 });
+
 /* ========= DELETE: מחיקת קטגוריה (נחסם אם יש מוצרים) ========= */
 router.delete('/:id', async (req, res) => {
   try {
