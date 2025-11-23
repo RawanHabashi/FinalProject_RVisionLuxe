@@ -12,7 +12,7 @@ const PasswordRecoveryPage = ({ onEmailSent }) => {
     setMessage("");
     setError("");
     try {
-      const res = await api.post("/password-recovery", { email }); // ✅ כאן עודכן הנתיב
+      const res = await api.post("/password-recovery", { email }); 
       if (res.data.message) {
         setMessage("✅ Code sent to your email.");
         setTimeout(() => {

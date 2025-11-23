@@ -250,14 +250,14 @@ const finalTotal = totals.final_total;
   }
 });
 
-// ✅ כל ההזמנות לממשק המנהל (עם פרטי לקוח בסיסיים)
+// ✅ כל ההזמנות לממשק המנהל (כולל מספר פריטים בכל הזמנה!)
 router.get('/', async (req, res) => {
   try {
     const db = await initDb();
 
     const {
-      q = '',        // טקסט חופשי לחיפוש (לא חובה)
-      status = '',   // סינון לפי סטטוס
+      q = '',
+      status = '',
       page = 1,
       limit = 100000,
     } = req.query;
@@ -267,10 +267,7 @@ router.get('/', async (req, res) => {
     let where = '1=1';
     const params = [];
 
-    // 🟡 נרמול ערך הסטטוס
     const normalizedStatus = String(status).trim();
-
-    // 🟡 במקרה שהסטטוס הוא "All statuses" — לא מסננים בכלל!
     if (
       normalizedStatus &&
       normalizedStatus !== 'All' &&
@@ -280,13 +277,12 @@ router.get('/', async (req, res) => {
       params.push(normalizedStatus);
     }
 
-    // 🔍 חיפוש לפי שם / מייל / מספר הזמנה
     if (q) {
       where += ' AND (u.name LIKE ? OR u.email LIKE ? OR o.order_id LIKE ?)';
       params.push(`%${q}%`, `%${q}%`, `%${q}%`);
     }
 
-    // 📌 שליפת כל ההזמנות + פרטי לקוח מינימליים
+    // ⭐ נוסיף LEFT JOIN ל־order_items ונחשב את סך הכמויות
     const [rows] = await db.query(
       `
       SELECT
@@ -297,17 +293,21 @@ router.get('/', async (req, res) => {
         o.status,
         o.payment_method,
         u.name  AS customer_name,
-        u.email AS customer_email
+        u.email AS customer_email,
+        COALESCE(SUM(oi.quantity), 0) AS items_count
       FROM orders o
       LEFT JOIN users u ON o.user_id = u.user_id
+      LEFT JOIN order_items oi ON oi.order_id = o.order_id
       WHERE ${where}
+      GROUP BY 
+        o.order_id, o.user_id, o.order_date, o.total_amount,
+        o.status, o.payment_method, u.name, u.email
       ORDER BY o.order_date DESC
       LIMIT ? OFFSET ?
       `,
       [...params, Number(limit), Number(offset)]
     );
 
-    // 📌 הממשק מצפה לשדה orders
     res.json({ orders: rows });
 
   } catch (err) {
@@ -315,7 +315,6 @@ router.get('/', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch orders' });
   }
 });
-
 
  
 // ✅ שליפת הזמנה בודדת לפי order_id
@@ -415,4 +414,107 @@ router.post('/', async (req, res) => {
     res.status(500).json({ error: 'Failed to add order' });
   }
 });
+
+/// ⭐ יצירת הזמנה אמיתית עם פריטים + עדכון מלאי
+router.post('/checkout', async (req, res) => {
+  const db = await initDb();
+
+  // אם initDb מחזיר Pool – נשתמש ב-getConnection,
+  // אם מחזיר חיבור רגיל – נשתמש בו עצמו.
+  const conn = db.getConnection ? await db.getConnection() : db;
+
+  try {
+    const { user_id, items, payment_method } = req.body;
+
+    if (!user_id || !items || !Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ error: 'Missing items or user_id' });
+    }
+
+    if (conn.beginTransaction) {
+      await conn.beginTransaction();
+    }
+
+    // חישוב סכום כולל מהפריטים (מחיר כולל מע"מ לפי טבלת products)
+    let subtotal = 0;
+
+    for (const it of items) {
+      const [p] = await conn.query(
+        'SELECT price FROM products WHERE product_id = ?',
+        [it.product_id]
+      );
+      if (!p.length) throw new Error('Product not found: ' + it.product_id);
+
+      const price = Number(p[0].price);
+      subtotal += price * Number(it.quantity);
+    }
+
+    // קריאת אחוז מע"מ + משלוח מה-DB
+    const vatPercent = await getCurrentVatPercent(db);
+    const SHIPPING = 30;
+
+    const totals = computeTotalsTaxIncluded({
+      subtotalInclVat: subtotal,
+      vatPercent,
+      shipping: SHIPPING,
+    });
+
+    // ⭐ יצירת הזמנה בטבלת orders
+    const [orderRes] = await conn.query(
+      `INSERT INTO orders 
+        (user_id, order_date, total_amount, status, vat_percent, shipping, payment_method)
+       VALUES 
+        (?, NOW(), ?, 'Pending', ?, ?, ?)
+      `,
+      [
+        user_id,
+        totals.final_total,
+        vatPercent,
+        SHIPPING,
+        payment_method || null
+      ]
+    );
+
+    const orderId = orderRes.insertId;
+
+    // ⭐ הוספת פריטים להזמנה + עדכון מלאי
+    for (const it of items) {
+      const { product_id, quantity } = it;
+
+      await conn.query(
+        `INSERT INTO order_items (order_id, product_id, quantity)
+         VALUES (?, ?, ?)`,
+        [orderId, product_id, quantity]
+      );
+
+      const [upd] = await conn.query(
+        `UPDATE products 
+         SET stock = stock - ?
+         WHERE product_id = ? AND stock >= ?`,
+        [quantity, product_id, quantity]
+      );
+
+      if (upd.affectedRows === 0) {
+        throw new Error('Not enough stock for product ' + product_id);
+      }
+    }
+
+    if (conn.commit) {
+      await conn.commit();
+    }
+
+    res.json({ success: true, order_id: orderId });
+
+  } catch (err) {
+    if (conn.rollback) {
+      try { await conn.rollback(); } catch (_) {}
+    }
+    console.error('❌ checkout error:', err);
+    res.status(500).json({ error: 'Checkout failed', details: err.message });
+  } finally {
+    if (conn.release) {
+      try { conn.release(); } catch (_) {}
+    }
+  }
+});
+
 module.exports = router;

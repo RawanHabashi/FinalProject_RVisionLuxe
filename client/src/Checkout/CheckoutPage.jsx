@@ -6,8 +6,8 @@ import axios from "axios";
 import { PayPalButtons } from "@paypal/react-paypal-js";
 
 // ⚠️ מחירי המוצרים כוללים מע״מ (VAT כלול במחירי המוצרים)
-const TAX_RATE = 0.18;   // 18%
-const SHIPPING = 30;     // משלוח קבוע
+const TAX_RATE = 0.18;   // 18% – רק להצגה בצד לקוח
+const SHIPPING = 30;     // משלוח קבוע – להצגה בלבד (בשרת גם 30)
 
 const CheckoutPage = ({ items = [], onBack, onOrderPlaced }) => {
   // ===== פרטי לקוח (נאספים לצורך הזמנה / משלוח) =====
@@ -15,7 +15,7 @@ const CheckoutPage = ({ items = [], onBack, onOrderPlaced }) => {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
 
-  // ===== שדות כרטיס אשראי) =====
+  // ===== שדות כרטיס אשראי =====
   const [ccNumber, setCcNumber] = useState("");
   const [validity, setValidity] = useState("");
   const [cvv, setCvv] = useState("");
@@ -25,7 +25,7 @@ const CheckoutPage = ({ items = [], onBack, onOrderPlaced }) => {
   const [paymentMethod, setPaymentMethod] = useState("Card");
   const [message, setMessage] = useState("");
 
-  // ===== חישובי סכומים (מחיר המוצר כולל מע״מ) =====
+  // ===== חישובי סכומים (מחיר המוצר כולל מע״מ – להצגה בלבד) =====
   const subtotalInclVat = items.reduce(
     (sum, item) => sum + (Number(item.price) || 0) * (item.quantity || 1),
     0
@@ -33,21 +33,6 @@ const CheckoutPage = ({ items = [], onBack, onOrderPlaced }) => {
   const vatAmount = +(subtotalInclVat * (TAX_RATE / (1 + TAX_RATE))).toFixed(2);
   const netBeforeVat = +(subtotalInclVat - vatAmount).toFixed(2);
   const finalTotal = +(subtotalInclVat + SHIPPING).toFixed(2);
-
-  // ===== עוזר: תאריך-שעה ישראל בפורמט DB =====
-  function getCurrentDateTimeInIsrael() {
-  const now = new Date();
-  // הזזת הזמן לשעון ישראל (UTC+3)
-  const israelTime = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Jerusalem" }));
-  const year = israelTime.getFullYear();
-  const month = String(israelTime.getMonth() + 1).padStart(2, "0");
-  const day = String(israelTime.getDate()).padStart(2, "0");
-  const hours = String(israelTime.getHours()).padStart(2, "0");
-  const minutes = String(israelTime.getMinutes()).padStart(2, "0");
-  const seconds = String(israelTime.getSeconds()).padStart(2, "0");
-  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-}
-
 
   // ===== ולידציה בסיסית לשדות המשתמש והסל =====
   function validateUserAndCart() {
@@ -67,51 +52,39 @@ const CheckoutPage = ({ items = [], onBack, onOrderPlaced }) => {
     return user;
   }
 
-  // ===== יצירת הזמנה ושמירת פריטים ב־DB =====
-  async function createOrderInDb({ user_id, status, payment_method }) {
-    // יצירת הזמנה
-    const orderRes = await axios.post("http://localhost:5000/api/orders", {
-      user_id,
-      order_date: getCurrentDateTimeInIsrael(),
-      total_amount: finalTotal.toFixed(2),
-      status,                 // "Pending"/"Processing"/"Paid"
-      payment_method,         // "Card" / "PayPal"
-    });
-    const orderId = orderRes.data.order_id;
+  // ===== יצירת הזמנה אמיתית ב־DB דרך /api/orders/checkout =====
+  async function createOrderInDb(user) {
+    const itemsForServer = items.map((item) => ({
+      product_id: item.product_id || item.id,
+      quantity: item.quantity || 1,
+    }));
 
-    // יצירת פריטי הזמנה
-    for (const item of items) {
-      const productId = item.product_id || item.id;
-      if (!productId) throw new Error("Invalid product_id in cart item.");
-      await axios.post("http://localhost:5000/api/order_items", {
-        order_id: orderId,
-        product_id: productId,
-        quantity: item.quantity || 1,
-      });
-    }
-    return orderId;
+    const res = await axios.post("http://localhost:5000/api/orders/checkout", {
+      user_id: user.user_id,
+      payment_method: paymentMethod, // "Card" / "PayPal"
+      items: itemsForServer,
+    });
+
+    return res.data.order_id;
   }
 
-  // ===== תשלום בכרטיס  =====
+  // ===== תשלום בכרטיס =====
   const handleSubmitCard = async (e) => {
     e.preventDefault();
     setMessage("");
+
     const user = validateUserAndCart();
     if (!user) return;
 
-    // ולידציה לשדות הכרטיס 
+    // ולידציה לשדות הכרטיס
     if (!ccNumber || !validity || !cvv || !idNumber) {
       setMessage("❌ Please complete all credit card fields.");
       return;
     }
 
     try {
-      const orderId = await createOrderInDb({
-        user_id: user.user_id,
-        status: "Pending",         
-        payment_method: "Card",
-      });
-      setMessage("✅ Order placed successfully (Credit Card ).");
+      const orderId = await createOrderInDb(user);
+      setMessage("✅ Order placed successfully (Credit Card).");
       setTimeout(() => onOrderPlaced?.(orderId), 1200);
     } catch (err) {
       console.error("Order failed:", err);
@@ -119,18 +92,15 @@ const CheckoutPage = ({ items = [], onBack, onOrderPlaced }) => {
     }
   };
 
-  // ===== לאחר PayPal capture מוצלח (Sandbox) =====
+  // ===== לאחר PayPal capture מוצלח =====
   const onPayPalApproved = async () => {
     setMessage("");
+
     const user = validateUserAndCart();
     if (!user) return;
 
     try {
-      const orderId = await createOrderInDb({
-        user_id: user.user_id,
-        status: "Pending",
-        payment_method: "PayPal",
-      });
+      const orderId = await createOrderInDb(user);
       setMessage("✅ Payment approved via PayPal. Order saved.");
       setTimeout(() => onOrderPlaced?.(orderId), 1000);
     } catch (err) {
@@ -175,7 +145,7 @@ const CheckoutPage = ({ items = [], onBack, onOrderPlaced }) => {
       </table>
 
       <div className="layout-wrapper">
-        {/* סיכומי הזמנה */}
+        {/* סיכומי הזמנה להצגה ללקוחה */}
         <div className="summary-totals">
           <p>💼 Products Total (incl. VAT): {subtotalInclVat.toFixed(2)}₪</p>
           <p>🧮 VAT (18%): {vatAmount.toFixed(2)}₪</p>
@@ -187,7 +157,11 @@ const CheckoutPage = ({ items = [], onBack, onOrderPlaced }) => {
         {/* טופס פרטי משתמש + אמצעי תשלום */}
         <form
           className="payment-form"
-          onSubmit={paymentMethod === "Card" ? handleSubmitCard : (e) => e.preventDefault()}
+          onSubmit={
+            paymentMethod === "Card"
+              ? handleSubmitCard
+              : (e) => e.preventDefault()
+          }
         >
           <h3>User information</h3>
           <input
@@ -213,7 +187,6 @@ const CheckoutPage = ({ items = [], onBack, onOrderPlaced }) => {
           />
 
           <h3>Payment method</h3>
-          {/* בחירת אמצעי תשלום */}
           <div className="payment-method">
             <label>
               <input
@@ -233,11 +206,11 @@ const CheckoutPage = ({ items = [], onBack, onOrderPlaced }) => {
                 checked={paymentMethod === "PayPal"}
                 onChange={() => setPaymentMethod("PayPal")}
               />
-              PayPal 
+              PayPal
             </label>
           </div>
 
-          {/* --- מצב כרטיס אשראי  --- */}
+          {/* --- מצב כרטיס אשראי --- */}
           {paymentMethod === "Card" && (
             <>
               <h3>Payment details</h3>
@@ -275,7 +248,7 @@ const CheckoutPage = ({ items = [], onBack, onOrderPlaced }) => {
             </>
           )}
 
-          {/* --- מצב PayPal  --- */}
+          {/* --- מצב PayPal --- */}
           {paymentMethod === "PayPal" && (
             <div style={{ marginTop: 8 }}>
               <PayPalButtons
@@ -296,7 +269,7 @@ const CheckoutPage = ({ items = [], onBack, onOrderPlaced }) => {
                 }}
                 onApprove={async (data, actions) => {
                   try {
-                    await actions.order.capture(); 
+                    await actions.order.capture();
                     await onPayPalApproved();
                   } catch (err) {
                     console.error("PayPal capture error:", err);

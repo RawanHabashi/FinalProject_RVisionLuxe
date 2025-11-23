@@ -24,3 +24,82 @@
 .inv-modal { position:fixed; inset:0; background:rgba(0,0,0,.25); display:flex; align-items:center; justify-content:center; }
 .inv-modal-body { background:#fff; border-radius:16px; padding:16px; width:min(800px, 90vw); box-shadow: 0 16px 30px rgba(0,0,0,.2); }
 .inv-table.small td, .inv-table.small th { font-size:14px; }
+
+.inv-input {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+  margin-bottom: 8px;
+}
+
+.inv-select {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  font-size: 0.95rem;
+  margin-top: 4px;
+}
+
+.inv-label {
+  display: block;
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.inv-modal-hint {
+  font-size: 0.9rem;
+  color: #777;
+  margin-bottom: 6px;
+}
+
+.inv-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.btn-primary {
+  background: #b57a4a;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 6px 16px;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background: #f5f5f5;
+  color: #444;
+  border: 1px solid #ddd;
+  border-radius: 999px;
+  padding: 6px 16px;
+  cursor: pointer;
+}
+
+.inv-error {
+  color: #c0392b;
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+/* הודעת הצלחה קטנה */
+.inv-flash {
+  position: fixed;
+  top: 80px;
+  right: 24px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  z-index: 1000;
+}
+
+.inv-flash-success {
+  background: #e9f7ef;
+  color: #1e8449;
+  border: 1px solid #a9dfbf;
+}

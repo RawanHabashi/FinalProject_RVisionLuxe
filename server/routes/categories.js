@@ -68,20 +68,23 @@ router.post('/', upload.single('image'), async (req, res) => {
   try {
     const db = await getDb();
 
-    // מקבלים גם image_url וגם image (לטובת תאימות)
     const { name, image, image_url } = req.body;
 
-    if (!name?.trim()) {
+    if (!name || !name.trim()) {
       return res.status(400).json({ message: 'name is required' });
     }
 
-    // בוחר מה לשמור:
-    // 1. אם יש קובץ שהועלה → uploads/filename
-    // 2. אחרת אם נשלח image_url או image מהטופס
-    const rawImage = image_url ?? image;
+    // נהפוך את rawImage תמיד למחרוזת (או ריק)
+    let rawImage = image_url ?? image;
+    if (typeof rawImage === 'string') {
+      rawImage = rawImage.trim();
+    } else {
+      rawImage = '';
+    }
+
     const imageValue = req.file
       ? `uploads/${req.file.filename}`
-      : (rawImage?.trim() || null);
+      : (rawImage || null);
 
     await db.query(
       'INSERT INTO categories (category_name, image_url) VALUES (?, ?)',
@@ -95,18 +98,21 @@ router.post('/', upload.single('image'), async (req, res) => {
   }
 });
 
-//* ========= PUT: עדכון קטגוריה (JSON או multipart) ========= */
+
+///* ========= PUT: עדכון קטגוריה (JSON או multipart) ========= */
 router.put('/:id', upload.single('image'), async (req, res) => {
   try {
     const db = await getDb();
     const { id } = req.params;
-
-    // גם כאן נקבל image_url וגם image
     const { name, image, image_url } = req.body;
-    const rawImage = image_url ?? image;
 
-    // אם יש קובץ חדש – נעדכן איתו
-    // אחרת נשתמש בערך שהגיע מהטופס (אם בכלל הגיע)
+    let rawImage = image_url ?? image;
+    if (typeof rawImage === 'string') {
+      rawImage = rawImage.trim();
+    } else {
+      rawImage = undefined;  // אם לא הגיע ערך, לא נעדכן בכלל את השדה
+    }
+
     const imageValue = req.file
       ? `uploads/${req.file.filename}`
       : (rawImage !== undefined ? (rawImage || null) : undefined);
@@ -119,7 +125,6 @@ router.put('/:id', upload.single('image'), async (req, res) => {
       values.push(name.trim());
     }
 
-    // נשים image_url רק אם הגיע ערך (או null) – אם לא הגיע בכלל, לא נעדכן את השדה הזה
     if (imageValue !== undefined) {
       fields.push('image_url=?');
       values.push(imageValue);
