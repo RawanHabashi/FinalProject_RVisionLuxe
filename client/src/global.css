@@ -1,0 +1,270 @@
+/* === GLOBAL RESET & BASE === */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  background-color: #fff7ef; /* רקע בגוון הבז' של האתר */
+  color: #3b2a1a;
+}
+
+/* שה-root יתפוס לפחות גובה מסך */
+#root {
+  min-height: 100vh;
+}
+
+/* קונטיינר כללי לרוב העמודים */
+.app-root,
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px 40px;
+}
+
+/* תמונות – שלא יברחו במסכים קטנים */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* כפתורים בסיסיים */
+button {
+  cursor: pointer;
+  border-radius: 999px;
+}
+
+/* טבלאות בסיסיות (עיגול עדין) */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 10px 12px;
+  text-align: left;
+}
+
+/* לייאאוט שתי עמודות שחוזר בהרבה מסכים */
+.two-columns,
+.layout-wrapper,
+.admin-two-columns {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+/* גריד כללי לכרטיסים (מוצרים, כרטיסי אדמין וכו') */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+}
+
+/* ========= BREAKPOINT 1024px – טאבלטים / מסכים בינוניים ========= */
+@media (max-width: 1024px) {
+  .card-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* ========= BREAKPOINT 768px – מובייל רגיל ========= */
+@media (max-width: 768px) {
+  /* מרווחים כלליים */
+  .app-root,
+  .page-container {
+    padding: 0 12px 24px;
+  }
+
+  h1 {
+    font-size: 1.7rem;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+  }
+
+  h3 {
+    font-size: 1.2rem;
+  }
+
+  /* כל הלייאאוטים של שתי עמודות → טור אחד */
+  .two-columns,
+  .layout-wrapper,
+  .admin-two-columns {
+    flex-direction: column;
+  }
+
+  /* === Checkout / Cart / Login / Signup === */
+  .checkout-container,
+  .cart-container,
+  .login-container,
+  .signup-container {
+    padding: 16px 10px;
+  }
+
+  .summary-table {
+    font-size: 0.9rem;
+  }
+
+  .summary-table th,
+  .summary-table td {
+    padding: 8px 6px;
+  }
+
+  /* ניתן להסתיר עמודת Unit Price אם תרצי (להשאיר כרגע פעיל) */
+  /*
+  .summary-table th:nth-child(3),
+  .summary-table td:nth-child(3) {
+    display: none;
+  }
+  */
+
+  .payment-form input,
+  .payment-form button,
+  .checkout-container button,
+  .cart-container button {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .payment-form .row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .back-button {
+    width: 100%;
+    margin-bottom: 12px;
+  }
+
+  /* === טבלאות בממשק מנהל / הזמנות / משתמשים / מלאי === */
+  .admin-table,
+  .orders-table,
+  .users-table,
+  .inventory-table {
+    font-size: 0.85rem;
+  }
+
+  .admin-table th,
+  .admin-table td,
+  .orders-table th,
+  .orders-table td,
+  .users-table th,
+  .users-table td,
+  .inventory-table th,
+  .inventory-table td {
+    padding: 8px 6px;
+  }
+
+  /* כפתורי פעולה בעמודה אחרונה – שורה מלאה במובייל */
+  .admin-table td:last-child button,
+  .orders-table td:last-child button,
+  .users-table td:last-child button {
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  /* === גריד מוצרים / Wishlist / Search === */
+  .card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .product-card,
+  .wishlist-card {
+    padding: 10px;
+  }
+
+  /* === כרטיסי סטטיסטיקה ב-InventorySnapshot === */
+  .inventory-snapshot-header,
+  .stats-cards-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .inventory-snapshot-header > .stat-card,
+  .stats-cards-row > .stat-card {
+    width: 100%;
+  }
+
+  /* === Navbar / Admin Nav === */
+  .top-nav,
+  .admin-nav {
+    padding-inline: 10px;
+  }
+
+  .top-nav-links,
+  .admin-nav-links {
+    gap: 10px;
+    font-size: 0.9rem;
+  }
+
+  /* === HEADER של דף הבית במובייל / טאבלט קטן === */
+  .home-page header {
+    display: flex;
+    flex-wrap: wrap;           /* מאפשר לשבור שורה */
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;         /* פחות רווח בצדדים */
+    gap: 6px;                  /* רווח קטן בין הבלוקים */
+  }
+
+  /* כל DIV ילד של ה-header בשורה משלו */
+  .home-page header > div {
+    flex: 1 1 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* הילד האמצעי (לוגו) במרכז */
+  .home-page header > div:nth-child(2) {
+    justify-content: center;
+  }
+
+  /* הילד האחרון (סל, Wishlist, My Orders) לימין */
+  .home-page header > div:last-child {
+    justify-content: flex-end;
+  }
+
+  /* welcome קטן יותר במובייל */
+  .home-page .welcome-message {
+    font-size: 0.8rem;
+  }
+}
+
+/* ========= BREAKPOINT 480px – מובייל קטן מאוד ========= */
+@media (max-width: 480px) {
+  /* מסתיר Welcome לגמרי במסכים מאוד צרים */
+  .home-page .welcome-message {
+    display: none;
+  }
+
+  h1 {
+    font-size: 1.4rem;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+  }
+
+  /* כרטיס אחד בשורה */
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* טבלאות בגודל קטן יותר */
+  table {
+    font-size: 0.8rem;
+  }
+}

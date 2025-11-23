@@ -4,21 +4,13 @@ const bcrypt = require('bcrypt');
 const initDb = require('../config/dbSingleton');
 
 console.log("✅ users.js loaded");
-
-
 // 📌 פונקציות בדיקה (Validation)
-
 // שם – רק אותיות ורווחים (כל השפות)
 const nameRegex = /^[\p{L}\s]+$/u;
-
 // טלפון – בדיוק 10 ספרות
 const phoneRegex = /^\d{10}$/;
 
-
-
-// =============================================
 // 🚀 רישום משתמש חדש
-// =============================================
 router.post('/register', async (req, res) => {
   try {
     const db = await initDb();
@@ -60,10 +52,7 @@ router.post('/register', async (req, res) => {
 });
 
 
-
-// =============================================
 // 🚀 התחברות משתמש
-// =============================================
 router.post('/login', async (req, res) => {
   try {
     const db = await initDb();
@@ -102,10 +91,7 @@ router.post('/login', async (req, res) => {
 });
 
 
-
-// =============================================
 // 📌 שליפת כל המשתמשים (מנהל)
-// =============================================
 router.get('/', async (req, res) => {
   try {
     const db = await initDb();
@@ -118,10 +104,7 @@ router.get('/', async (req, res) => {
 });
 
 
-
-// =============================================
 // 🗑️ מחיקת משתמש
-// =============================================
 router.delete('/:id', async (req, res) => {
   try {
     const db = await initDb();
@@ -138,10 +121,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 
-
-// =============================================
 // ✏️ עדכון משתמש
-// =============================================
 router.put('/:id', async (req, res) => {
   try {
     const db = await initDb();

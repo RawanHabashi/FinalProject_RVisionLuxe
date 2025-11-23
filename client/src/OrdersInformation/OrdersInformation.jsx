@@ -15,7 +15,8 @@ function OrdersInformation({ userId: userIdProp, onBack }) {
     userIdProp ??
     JSON.parse(localStorage.getItem("user") || "{}")?.user_id ??
     null;
-
+  
+      // טעינת ההזמנות של המשתמש המחובר
   useEffect(() => {
     if (!effectiveUserId) return; // אם אין משתמש מחובר — לא נביא הזמנות
     async function fetchOrders() {
@@ -41,10 +42,11 @@ function OrdersInformation({ userId: userIdProp, onBack }) {
     { label: "Delivered", icon: "✅" },
   ];
 
-  const getCurrentStep = (status) =>
+  const getCurrentStep = (status) =>//סטטוס נוכחי
     statusSteps.findIndex((s) => s.label === status); // מחזיר -1 אם לא קיים
 
-  const downloadInvoice = async (orderId) => {
+     // הורדת חשבונית PDF להזמנה
+    const downloadInvoice = async (orderId) => {
     try {
       const res = await axios.get(
         `http://localhost:5000/api/orders/invoice/${orderId}`,

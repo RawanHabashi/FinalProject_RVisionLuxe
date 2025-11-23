@@ -7,20 +7,24 @@ import "./AdminCategories.css";
 
 // ניהול קטגוריות
 export default function AdminCategories({ onBack = () => {} }) {
-  const [categories, setCategories] = useState([]);
-  const [usageMap, setUsageMap] = useState({});
+  const [categories, setCategories] = useState([]);  // רשימת כל הקטגוריות
+  const [usageMap, setUsageMap] = useState({});//לכל קטגוריה כמה מוצרים שייכים אליה
+   
+  // טעינה ושגיאה להצגת מצבים למשתמש
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  
+    // סטייטים עבור הוספה/עריכה
   const [editingCat, setEditingCat] = useState(null);
   const [adding, setAdding] = useState(false);
 
-  // עוזר להצגת תמונה
+  //להצגת תמונה מהשרת
   const API_HOST = (api?.defaults?.baseURL || "http://localhost:5000").replace(
     /\/api\/?$/,
     ""
   );
 
+    // פונקציה המחזירה את כתובת התמונה המלאה
   const getImageSrc = (img) => {
     if (!img) return "";
     if (img.startsWith("http://") || img.startsWith("https://") || img.startsWith("/"))
@@ -43,11 +47,13 @@ export default function AdminCategories({ onBack = () => {} }) {
       image,
     };
   };
-
+  
+    // טעינת כל הקטגוריות + בדיקה כמה מוצרים משוייכים לכל קטגוריה
   const fetchAll = async () => {
     setLoading(true);
     setError(null);
     try {
+            // שתי קריאות API במקביל – רשימת קטגוריות ומפת שימוש
       const [catRes, useRes] = await Promise.all([
         api.get("/categories"),
         api.get("/categories/in-use-map").catch(() => ({ data: [] })),
@@ -79,8 +85,10 @@ export default function AdminCategories({ onBack = () => {} }) {
     fetchAll();
   }, []);
 
+     // בדיקה האם הקטגוריה נמצאת בשימוש (יש מוצרים שמקושרים אליה)
   const isInUse = (id) => (usageMap?.[id] ?? 0) > 0;
-
+  
+    // מחיקת קטגוריה
   const handleDelete = async (id) => {
     try {
       let count = usageMap?.[id] ?? undefined;
@@ -96,9 +104,11 @@ export default function AdminCategories({ onBack = () => {} }) {
       }
 
       if (!window.confirm("Delete this category?")) return;
-
+      
+            // מחיקה ב-API
       await api.delete(`/categories/${id}`);
-
+    
+       // עדכון רשימת הקטגוריות בצד לקוח
       setCategories((prev) => prev.filter((c) => c.id !== id));
       setUsageMap((prev) => {
         const next = { ...prev };
@@ -117,10 +127,10 @@ export default function AdminCategories({ onBack = () => {} }) {
     }
   };
 
-  // כאן חשוב: payload שיגיע מה-Modal כולל id, name, image_url (אופציונלי)
+  // שמירה של קטגוריה – גם הוספה וגם עריכה
   const handleSave = async (payload, file) => {
   try {
-    const isEdit = !!payload.id;   // אם יש id – זו עריכה
+    const isEdit = !!payload.id;   
     const id = payload.id;
 
     // תמיד נשתמש ב-FormData, גם בהוספה וגם בעריכה
@@ -136,7 +146,7 @@ export default function AdminCategories({ onBack = () => {} }) {
 
     // אם בחרת קובץ – נוסיף אותו
     if (file) {
-      fd.append("image", file); // אותו שם שדה כמו ב-multer: upload.single("image")
+      fd.append("image", file); 
     }
 
     if (isEdit) {
@@ -145,6 +155,7 @@ export default function AdminCategories({ onBack = () => {} }) {
       await api.post("/categories", fd);
     }
 
+      // ריענון כל הרשימה לאחר השמירה
     await fetchAll();
     setEditingCat(null);
     setAdding(false);

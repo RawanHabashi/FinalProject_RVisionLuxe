@@ -24,18 +24,20 @@ export default function AdminDashboard({
   const [adminName] = useState("Admin"); 
 
   // ---------- סטייט למע״מ ----------
-  const [vatPercent, setVatPercent] = useState(18);
-  const [currentVat, setCurrentVat] = useState(18);
-const [savingVat, setSavingVat] = useState(false);
+  const [vatPercent, setVatPercent] = useState(18);  // הערך שהמנהל יכול לערוך בשדה הקלט
+  const [currentVat, setCurrentVat] = useState(18);// Current-הערך הנוכחי ששמור בשרת ומוצג כ
+const [savingVat, setSavingVat] = useState(false);// דגל המייצג שהשמירה מתבצעת כרגע
+  // הודעות למשתמש – הצלחה / שגיאה בשמירת המע״מ
 const [vatMsg, setVatMsg] = useState({ type: "", text: "" });
-
-  // טעינת סטטיסטיקות פעם אחת
+  //טעינת סטטיסטיקות
   useEffect(() => {
-    let isMounted = true;
+    let isMounted = true;// כדי למנוע-setState  אחרי שהקומפוננטה הוסר
     (async () => {
       try {
+                // קריאה לשרת להבאת סיכום סטטיסטי (משתמשים, מוצרים, הזמנות וכו')
         const res = await axios.get("http://localhost:5000/api/admin/stats");
         if (isMounted && res?.data && typeof res.data === "object") {
+                    // איחוד הערכים מהשרת עם הערכים הקיימים בסטייט
           setStats((prev) => ({ ...prev, ...res.data }));
         }
       } catch (err) {
@@ -43,7 +45,8 @@ const [vatMsg, setVatMsg] = useState({ type: "", text: "" });
       }
     })();
     return () => {
-      isMounted = false;
+      isMounted = false;  // פונקציית ניקוי – מסמנת שהקומפוננטה כבר לא קיימת
+
     };
   }, []);
 
@@ -52,6 +55,7 @@ const [vatMsg, setVatMsg] = useState({ type: "", text: "" });
     let mounted = true;
     (async () => {
       try {
+                // בקשת-GET  להגדרת המע״מ מהשרת
         const res = await axios.get("http://localhost:5000/api/settings/vat");
         if (mounted && typeof res?.data?.vat_percent === "number") {
         setVatPercent(res.data.vat_percent);

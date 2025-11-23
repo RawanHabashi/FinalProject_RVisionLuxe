@@ -4,7 +4,7 @@ import React from "react";
 import AdminInventory from "./AdminInventory";
 import "./AdminCategories.css";
 import "./AdminInventory.css";
-
+//קומפוננטת עמוד ניהול מלאי כאן אנחנו מוסיפים כותרת + כפתור חזרה לדשבורד
 export default function AdminInventoryPage({ onBack }) {
   return (
     <div className="admin-cats">

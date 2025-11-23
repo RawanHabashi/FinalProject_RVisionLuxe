@@ -179,9 +179,67 @@ nav > button {
   white-space: nowrap;
   opacity: 0.9;
 }
-/* אופציונלי: להסתיר במסכים צרים כדי לא לשבור שורה */
+/* רספונסיביות לדף הבית */
+
+/* טאבלט / מובייל עד 768px */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0.5rem 1rem;
+  }
+
+  .logo-container {
+    position: static;
+    transform: none;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+  }
+
+  nav {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .nav-buttons {
+    margin-left: 0;
+    gap: 0.5rem;
+  }
+
+  .nav-buttons button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+
+  .icon-container {
+    gap: 0.6rem;
+  }
+
+  .icon-link {
+    padding: 0.3rem 0.4rem;
+  }
+
+  .icon-link img {
+    width: 18px;
+    height: 18px;
+  }
+
+  .welcome-message {
+    font-size: 0.8rem;
+  }
+}
+
+/* מסכים מאוד צרים – עד 520px */
 @media (max-width: 520px) {
   .welcome-message {
     display: none;
+  }
+
+  .nav-buttons button {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.6rem;
   }
 }

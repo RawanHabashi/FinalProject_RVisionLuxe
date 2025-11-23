@@ -59,7 +59,7 @@ const AdminUserTable = ({ onBack }) => {
   // עדכון משתמש (מהמודל)
   const handleUpdate = async (updatedUser) => {
     try {
-      // משתמשים ב־user_id כ־PK
+      // משתמשים ב־user_id 
       await api.put(`/users/${updatedUser.user_id}`, updatedUser);
       setSelectedUser(null);
       await fetchUsers();

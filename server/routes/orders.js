@@ -56,7 +56,6 @@ function computeTotalsTaxIncluded({ subtotalInclVat, vatPercent, shipping }) {
 
    //Orders API
 // ✅ שליפת כל ההזמנות של משתמש מסוים לפי user_id (עם פריטים)
-// ✅ שליפת כל ההזמנות של משתמש (עם פריטים + totals)
 router.get('/user/:user_id', async (req, res) => {
   try {
     const db = await initDb();
@@ -152,15 +151,14 @@ router.get('/invoice/:orderId', async (req, res) => {
       WHERE oi.order_id = ?
     `, [orderId]);
     // 3) חישובים דינמיים לפי DB
-// א. מע"מ: אם קיים בעמודת ההזמנה (orders.vat_percent) – נשתמש בו,
-// אחרת נקרא את הערך הנוכחי מה-settings (שומר היסטוריות נכונה לחשבוניות ישנות).
+//א. מע"מ   (orders.vat_percent) – נשתמש בו,
 let vatPercent;
 if (order.vat_percent != null) {
   vatPercent = Number(order.vat_percent);      
 } else {
   vatPercent = await getCurrentVatPercent(db); 
 }
-// ב. משלוח: אם יש עמודה בהזמנה – השתמש בה, אחרת ברירת מחדל 30
+// ב. משלוח:30
 const SHIPPING = order.shipping != null ? Number(order.shipping) : 30;
 // ג. subtotal מהפריטים (מחיר כולל מע"מ)
 let subtotal = 0;
@@ -374,7 +372,6 @@ router.get('/:id', async (req, res) => {
 });
 
 // ✅ עדכון סטטוס הזמנה
-// PATCH /api/orders/:id/status   body: { status: "In Transit" }
 router.patch('/:id/status', async (req, res) => {
   try {
     const db = await initDb();
@@ -420,7 +417,6 @@ router.post('/checkout', async (req, res) => {
   const db = await initDb();
 
   // אם initDb מחזיר Pool – נשתמש ב-getConnection,
-  // אם מחזיר חיבור רגיל – נשתמש בו עצמו.
   const conn = db.getConnection ? await db.getConnection() : db;
 
   try {

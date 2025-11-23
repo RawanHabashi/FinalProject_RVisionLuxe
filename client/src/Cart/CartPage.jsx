@@ -3,7 +3,10 @@
 import React from 'react';
 import './CartPage.css';
 const CartPage = ({ items = [], onBack, onRemove, onCheckout }) => {
+  // פונקציה שמחזירה כמות פריט 
   const getQuantity = (item) => item.quantity || 1;
+  //    בדיקה אם המשתמש מחובר.
+    //  אם לא מחובר → מוצגת הודעה שהוא אורח.
   const isLoggedIn = !!(
     localStorage.getItem('user_id') ||
     JSON.parse(localStorage.getItem('user') || '{}').user_id

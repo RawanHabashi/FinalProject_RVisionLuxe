@@ -63,7 +63,7 @@ router.post('/', upload.single('image'), async (req, res) => {
     // ואז מחליטים על תמונה: קובץ קודם, אחרת ה-URL שנשלח
     const fileName = req.file ? req.file.filename : null;
     const imageValue = fileName ? `uploads/${fileName}` : (image || '');
-
+     //התוצאה
     const [result] = await db.query(
       'INSERT INTO products (name, price, description, image, category_id) VALUES (?, ?, ?, ?, ?)',
       [

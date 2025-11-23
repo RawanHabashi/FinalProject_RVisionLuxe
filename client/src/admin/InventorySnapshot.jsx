@@ -10,7 +10,7 @@ export default function InventorySnapshot({ onManageClick }) {
     outOfStock: 0,
     lowCount: 0,
     reservedTotal: 0,
-    topLow: []
+    topLow: []  // רשימת מוצרים עם מלאי נמוך/חסר
   });
   const [loading, setLoading] = useState(true);
 
@@ -20,19 +20,22 @@ export default function InventorySnapshot({ onManageClick }) {
   async function load() {
     setLoading(true);
     try {
+            // בקשה לשרת לקבלת סטטיסטיקות מלאי
       const data = await getInventoryStats();
       setStats(data);
     } finally {
       setLoading(false);
     }
   }
-
+   
+    // טעינה ראשונית כשנכנסים לקומפוננטה
   useEffect(() => {
     load();
   }, []);
 
   async function quickAdjust(item, delta) {
     try {
+      //מעדכן את המלאי עבור מוצר מסוים
       await adjustStock({
         product_id: item.product_id,
         qty_change: delta,
@@ -47,10 +50,11 @@ export default function InventorySnapshot({ onManageClick }) {
 
       setToast(msg);
 
-      // מעלים את ההודעה אחרי 2 שניות
+      // מעלים את ההודעה אחרי 5 שניות
       setTimeout(() => setToast(null), 5000);
 
       await load();
+      // ריענון הנתונים מהשרת אחרי העדכון
     } catch (e) {
       console.error(e);
       setToast('Failed to update stock');

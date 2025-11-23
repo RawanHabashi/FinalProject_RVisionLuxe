@@ -2,7 +2,7 @@
 
 import React from 'react';
 import './CategoryPage.css';
-
+ //דף המציג מוצרים לפי קטגוריה מסוימת
 const CategoryPage = ({ type = "", products = [], onBack, onAddToWishlist }) => {
   return (
     <div className="category-page">

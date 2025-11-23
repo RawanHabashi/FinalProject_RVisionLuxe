@@ -1,6 +1,7 @@
 //Roaia Habashi and Rawan Habashi
 
 import React, { useState, useEffect } from "react";
+import './global.css';
 import Login from "./Login/Login";
 import SignUpPage from "./SignUp/SignUpPage";
 import PasswordFlow from "./PasswordRecovery/PasswordFlow";

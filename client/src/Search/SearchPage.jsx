@@ -3,20 +3,37 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../api/axios';
 import './SearchPage.css';
+/*
+  דף שמאפשר ללקוחה לחפש תיקים לפי:
+  • סוג (Wedding / School / Daily / Travel / Brand / Wallet)
+  • צבע (Black, White, Pink...)
+
+  הנתונים נמשכים מהשרת /products
+  ואז מתבצע סינון בצד הלקוח לפי שם המוצר
+*/
 function SearchPage({ onBack }) {
+    // state לשמירת המוצרים לאחר סינון
   const [products, setProducts] = useState([]);
+    // סינונים - סוג וצבע
   const [typeFilter, setTypeFilter] = useState('');
   const [colorFilter, setColorFilter] = useState('');
+  /*
+    fetchProducts
+    -------------
+    פעולה שמביאה את כל המוצרים מהשרת
+    ואז מבצעת סינון לפי שם המוצר
+     מופעל- שומרים רק את המוצרים המתאימיםfiltering אם 
+  */
   const fetchProducts = async () => {
     try {
       const response = await axios.get('/products');
-      let filtered = response.data;
-      if (typeFilter) {
+      let filtered = response.data;  // מתחילים מרשימת המוצרים המלאה
+      if (typeFilter) {//סינון לפי סוג
         filtered = filtered.filter((p) =>
           p.name.toLowerCase().includes(typeFilter.toLowerCase())
         );
       }
-      if (colorFilter) {
+      if (colorFilter) {//סינון לפי צבע
         filtered = filtered.filter((p) =>
           p.name.toLowerCase().includes(colorFilter.toLowerCase())
         );
@@ -52,6 +69,9 @@ function SearchPage({ onBack }) {
           <option value="beige">Beige</option>
           <option value="brown">Brown</option>
           <option value="colorful">Colorful</option>
+           <option value="Gray">Gray</option>
+          <option value="Blue">Blue</option>
+          <option value="Green">Green</option>
         </select>
       </div>
      <div className="products-list">

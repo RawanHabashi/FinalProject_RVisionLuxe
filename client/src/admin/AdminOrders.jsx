@@ -12,7 +12,7 @@ const formatILS = (val) =>
 const LIMIT_ALL = 100000;
 export default function AdminOrders({ onBack = () => {} }) {
   const [orders, setOrders]   = useState([]);
-  const [q, setQ]             = useState("");
+  const [q, setQ]             = useState("");// חיפוש לפי טקסט
   const [status, setStatus]   = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -27,7 +27,7 @@ export default function AdminOrders({ onBack = () => {} }) {
       page: 1,
       limit: LIMIT_ALL,
     };
-
+      // קריאה לשרת: קבלת כל ההזמנות לפי מסננים
     const { data } = await api.get("/orders", { params });
 
     setOrders(Array.isArray(data?.orders) ? data.orders : []);
@@ -54,7 +54,9 @@ export default function AdminOrders({ onBack = () => {} }) {
     setStatus(v);
     fetchOrders({ status: v });
   };
+    // שינוי סטטוס להזמנה מסוימת
   const handleStatusChange = async (order_id, newStatus) => {
+        // שמירה זמנית בקופי לצורך שחזור אם יש שגיאה
     const prev = orders.map(o => ({ ...o }));
     setOrders(list => list.map(o => o.order_id === order_id ? { ...o, status: newStatus } : o));
     try {
@@ -65,6 +67,7 @@ export default function AdminOrders({ onBack = () => {} }) {
       setOrders(prev);
     }
   };
+    // פתיחת חשבונית PDF (בשרת בנית נתיב להפקה)
   const openInvoice = (order_id) =>
     window.open(`${api.defaults.baseURL}/orders/invoice/${order_id}`, "_blank");
   return (

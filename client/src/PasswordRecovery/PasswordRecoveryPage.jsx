@@ -3,17 +3,29 @@
 import React, { useState } from "react";
 import api from "../api/axios";
 import "./PasswordRecoveryPage.css";
+/*  
+  שלב 1 בתהליך שחזור הסיסמה
+  המשתמשת מזינה מייל- השרת שולח קוד אימות למייל
+  אם הצליח — עוברים לשלב הבא
+*/
 const PasswordRecoveryPage = ({ onEmailSent }) => {
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState("");// המייל שהמשתמשת מקלידה
+  const [message, setMessage] = useState("");// הודעת הצלחה
+  const [error, setError] = useState("");// הודעת שגיאה
+   /*
+    handleSubmit – "Send Recovery Email" כשמשתמשת לוחצת על 
+      הפעולה שולחת בקשת פוסט לשרת עם מייל
+    אם השרת מחזיר הודעה – עוברים לשלב הבא בתהליך
+  */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
     setError("");
     try {
+            // שולחים את המייל לשרת כדי שישלח קוד אימות
       const res = await api.post("/password-recovery", { email }); 
       if (res.data.message) {
+                // אם השרת החזיר הצלחה
         setMessage("✅ Code sent to your email.");
         setTimeout(() => {
           onEmailSent(email); // עובר לשלב הבא בתהליך האימות
@@ -23,6 +35,7 @@ const PasswordRecoveryPage = ({ onEmailSent }) => {
       }
     } catch (err) {
       console.error(err);
+      //שגיאה 
       setError(err.response?.data?.message || "❌ Failed to send email.");
     }
   };

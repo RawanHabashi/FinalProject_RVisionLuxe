@@ -10,9 +10,8 @@ router.post("/", async (req, res) => {
   }
 
   try {
-    // מקבלים חיבור ל-DB כמו בשאר הראוטים
+    // מקבלים חיבור ל-DB 
     const connection = await initDb();
-
     const [rows] = await connection.query(
       `SELECT * 
        FROM reset_codes

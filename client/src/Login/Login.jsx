@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
 import './Login.css';
 
-const MAX_ATTEMPTS = 3;
+const MAX_ATTEMPTS = 3;//מספר מקסימלי לניסיונות 
 
 function Login({ onForgotPassword, onRegister, onLoginSuccess, onAdminLogin }) {
   const [email, setEmail]       = useState('');

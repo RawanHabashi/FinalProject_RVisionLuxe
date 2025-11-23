@@ -2,7 +2,7 @@
 
 import "./CategoryModal.css";
 import React, { useEffect, useState } from "react";
-
+ //  קומפוננטת מודאל להוספה/עריכה של קטגוריה
 export default function CategoryModal({
   mode = "add",
   category,
@@ -11,6 +11,7 @@ export default function CategoryModal({
 }) {
   const isEdit = mode === "edit";
 
+   //שדות הטופס שמנהל ממלא
   const [form, setForm] = useState({
     id: category?.category_id ?? category?.id ?? null,
     name:
@@ -20,6 +21,7 @@ export default function CategoryModal({
     image_url: category?.image ?? category?.image_url ?? "",
   });
 
+   //אם המשתמש מעלה קובץ תמונה חדש
   const [file, setFile] = useState(null);
 
   // לעדכן טופס כשנפתחת קטגוריה אחרת לעריכה
@@ -39,13 +41,13 @@ export default function CategoryModal({
     }
   }, [isEdit, category]);
 
-  // סגירה ב-Esc
   useEffect(() => {
     const onKey = (e) => e.key === "Escape" && onClose?.();
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
-
+  
+  // היא בודקת תקינות בסיסית, מכינה את הנתונים לפונקציית
   const submit = (e) => {
     e.preventDefault();
 
@@ -53,14 +55,15 @@ export default function CategoryModal({
       alert("Name is required");
       return;
     }
-
+  
+    //הגוף שנשלח לשרת
     const payload = {
-      id: form.id, // ← זה ה-id של הקטגוריה (category_id בבסיס הנתונים)
+      id: form.id, 
       name: form.name.trim(),
       image_url: form.image_url.trim(),
     };
 
-    if (!payload.id) delete payload.id; // בהוספה אין id
+    if (!payload.id) delete payload.id; 
     if (!payload.image_url) delete payload.image_url;
 
     onSave?.(payload, file);

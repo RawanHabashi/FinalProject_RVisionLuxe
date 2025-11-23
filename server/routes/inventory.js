@@ -7,7 +7,7 @@ const initDb = require('../config/dbSingleton');
 router.get('/stats', async (req, res) => {
   try {
     const db = await initDb();
-
+        // כמה מוצרים שבהם המלאי הזמין <= 0 (נגמר לגמרי)
     const [outRows] = await db.query(`
       SELECT COUNT(*) AS cnt FROM (
         SELECT (p.stock - IFNULL(r.reserved,0)) AS available
@@ -16,7 +16,7 @@ router.get('/stats', async (req, res) => {
       ) t
       WHERE t.available <= 0
     `);
-
+     // כמה מוצרים במלאי נמוך
     const [lowRows] = await db.query(`
       SELECT COUNT(*) AS cnt FROM (
         SELECT p.reorder_level, (p.stock - IFNULL(r.reserved,0)) AS available
@@ -25,12 +25,12 @@ router.get('/stats', async (req, res) => {
       ) t
       WHERE t.available > 0 AND t.available <= t.reorder_level
     `);
-
+        // סכום כל היחידות השמורות (Reserved) בכל המוצרים
     const [resRows] = await db.query(`
       SELECT IFNULL(SUM(reserved),0) AS reservedTotal
       FROM v_reserved_by_product
     `);
-
+   //מוצרים עם המלאי הנמוך ביותר
     const [topLow] = await db.query(`
       SELECT p.product_id, p.name, p.reorder_level,
              IFNULL(r.reserved,0) AS reserved,
@@ -42,6 +42,7 @@ router.get('/stats', async (req, res) => {
       LIMIT 5
     `);
 
+         // החזרת הנתונים כ-JSON
     res.json({
       outOfStock: outRows?.[0]?.cnt || 0,
       lowCount:   lowRows?.[0]?.cnt || 0,
@@ -68,6 +69,7 @@ router.get('/list', async (req, res) => {
 
   const offset = (Number(page) - 1) * Number(pageSize);
 
+     // מוודאים שמותר למיין רק לפי שדות מסוימים
   const allowedSort = new Set(['name','price','stock','reorder_level']);
   const orderBy = allowedSort.has(String(sort)) ? sort : 'name';
   const orderDir = String(dir).toLowerCase() === 'desc' ? 'DESC' : 'ASC';
@@ -76,6 +78,8 @@ router.get('/list', async (req, res) => {
     const like = `%${query}%`;
 
     const [rows] = await db.query(
+          // שאילתה עיקרית – מחזירה רשימת מוצרים עם:
+             // קטגוריה, מחיר, stock, reserved, available, reorder_level
       `SELECT p.product_id, p.name, p.price, p.stock, p.reorder_level,
               c.category_name AS category,
               IFNULL(r.reserved, 0) AS reserved,
@@ -88,14 +92,14 @@ router.get('/list', async (req, res) => {
        LIMIT ? OFFSET ?`,
       [like, Number(pageSize), offset]
     );
-
+    // ספירת סך כל המוצרים שמתאימים לחיפוש
     const [[{ count }]] = await db.query(
       `SELECT COUNT(*) AS count
        FROM products p
        WHERE p.name LIKE ?`,
       [like]
     );
-
+       // החזרת פריטים + כמות כוללת
     res.json({ items: rows, total: count });
   } catch (err) {
     console.error('inventory/list error:', err);
@@ -109,7 +113,7 @@ router.get('/movements/:product_id', async (req, res) => {
 
   try {
     const [rows] = await db.query(
-      `SELECT id, qty_change, reason, note, created_at
+      `SELECT id, qty_change, reason, created_at
        FROM stock_movements
        WHERE product_id = ?
        ORDER BY created_at DESC
@@ -127,25 +131,27 @@ router.get('/movements/:product_id', async (req, res) => {
 // ----- התאמת מלאי (לא מאפשר כמות שלילית) -----
 router.post('/adjust', async (req, res) => {
   const db = await initDb();
-  let { product_id, qty_change, reason, note } = req.body || {};
+  let { product_id, qty_change, reason } = req.body || {};
 
   // המרה למספרים
   const pid = Number(product_id);
   const delta = Number(qty_change);
 
   // בדיקות בסיסיות
+  //product_id
   if (!Number.isInteger(pid) || pid <= 0) {
     return res.status(400).json({ error: 'Invalid product_id' });
   }
 
+     // qty_change – חייב להיות מספר שלם ושונה מאפס
   if (!Number.isInteger(delta) || delta === 0) {
     return res.status(400).json({ error: 'qty_change must be a non-zero integer' });
   }
-
+     // חובה לציין reason
   if (!reason) {
     return res.status(400).json({ error: 'reason is required' });
   }
-
+    // רק סיבות מסוימות מותרות
   const allowedReasons = new Set(['Purchase','Correction','Return','Damage']);
   if (!allowedReasons.has(reason)) {
     return res.status(400).json({ error: 'Invalid reason' });
@@ -186,14 +192,15 @@ router.post('/adjust', async (req, res) => {
 
     // רישום התנועה בטבלת stock_movements
     await db.query(
-      'INSERT INTO stock_movements (product_id, qty_change, reason, note) VALUES (?,?,?,?)',
-      [pid, delta, reason, note || null]
+      'INSERT INTO stock_movements (product_id, qty_change, reason) VALUES (?,?,?)',
+      [pid, delta, reason || null]
     );
 
     await db.commit();
 
     res.json({ ok: true, newStock });
   } catch (err) {
+        // ניסיון להחזיר את הטרנזקציה אחורה במקרה של שגיאה
     try { await db.rollback(); } catch {}
     console.error('inventory/adjust error:', err);
     res.status(500).json({ error: 'Failed to adjust stock' });

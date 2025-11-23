@@ -75,7 +75,7 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
     return () => { alive = false; };
   }, [categoryId]);
 
-  /* ===================== מחיקה – מודל מותאם ===================== */
+  /* =====================מחיקה ===================== */
 
   const openDeleteModal = (product) => {
     setProductToDelete(product);
@@ -161,6 +161,7 @@ export default function AdminProducts({ onBack = () => {}, categoryId, categoryN
     }
   };
 
+   //שמירת שינויים
   const handleSaveEdit = async (payload, fileFromModal) => {
     try {
       let res;

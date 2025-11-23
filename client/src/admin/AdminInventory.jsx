@@ -5,21 +5,25 @@ import { listInventory, adjustStock, fetchMovements } from '../api/inventoryApi'
 import './AdminInventory.css';
 
 // ניהול מלאי
+/*
+  קומפוננטת תגית מצב מלאי (תקין / נמוך / חסר)
+  מקבלת את הכמות הפנויה ואת רמת ההתראה, ומציגה תג מתאים.
+*/
 const LowBadge = ({ available, reorder }) => {
   const status = available <= 0 ? 'out' : available <= reorder ? 'low' : 'ok';
   const label  = status === 'out' ? 'Out of stock' : status === 'low' ? 'Low' : 'OK';
   return <span className={`inv-badge ${status}`}>{label}</span>;
 };
-
+// סטייטים עיקריים של הטבלה
 export default function AdminInventory() {
-  const [query, setQuery]   = useState('');
-  const [page, setPage]     = useState(1);
-  const [pageSize]          = useState(10);
-  const [sort, setSort]     = useState('name');
-  const [dir, setDir]       = useState('asc');
-  const [rows, setRows]     = useState([]);
-  const [total, setTotal]   = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [query, setQuery]   = useState('');// חיפוש לפי שם מוצר
+  const [page, setPage]     = useState(1); // מספר עמוד נוכחי
+  const [pageSize]          = useState(10); // מספר מוצרים בעמוד
+  const [sort, setSort]     = useState('name'); // שדה מיון
+  const [dir, setDir]       = useState('asc');// סדר מיון -עולה
+  const [rows, setRows]     = useState([]); // תוצאות מוצרים
+  const [total, setTotal]   = useState(0); // מספר כולל של מוצרים
+  const [loading, setLoading] = useState(false); // מצב טעינה
 
   // היסטוריית תנועות
   const [sel, setSel] = useState(null);
@@ -27,15 +31,15 @@ export default function AdminInventory() {
   // מודאל עדכון מלאי
   const [adjustProduct, setAdjustProduct] = useState(null); // המוצר שנעדכן
   const [adjustQty, setAdjustQty]         = useState('');   // שינוי בכמות
-  const [adjustReason, setAdjustReason]   = useState('Purchase');
-  const [adjustError, setAdjustError]     = useState('');
-  const [flashMsg, setFlashMsg]           = useState('');   // הודעת הצלחה קצרה
+  const [adjustReason, setAdjustReason]   = useState('Purchase');// סיבת התנועה
+  const [adjustError, setAdjustError]     = useState('');//שגיאות
+  const [flashMsg, setFlashMsg]           = useState('');   // הודעת הצלחה
 
   const pages = useMemo(
     () => Math.max(1, Math.ceil(total / pageSize)),
     [total, pageSize]
   );
-
+  // טעינת נתונים מהשרת
   async function load() {
     setLoading(true);
     try {
@@ -46,12 +50,12 @@ export default function AdminInventory() {
       setLoading(false);
     }
   }
-
+  // טוען מחדש בעת שינוי עמוד / מיון
   useEffect(() => {
     load();
     // eslint-disable-next-line
   }, [page, sort, dir]);
-
+  // חיפוש – מאפס לעמוד 1
   const onSearch = (e) => {
     setQuery(e.target.value);
     setPage(1);
@@ -74,7 +78,7 @@ export default function AdminInventory() {
     const qty_change = Number(adjustQty);
 
     if (!Number.isInteger(qty_change) || qty_change === 0) {
-      setAdjustError('Please enter a non-zero integer (e.g. 3 or -2)');
+      setAdjustError('Please enter a non-zero integer');
       return;
     }
     if (!adjustReason.trim()) {
@@ -85,17 +89,18 @@ export default function AdminInventory() {
     try {
       setAdjustError('');
       await adjustStock({
+              // קריאה לשרת: פעולת עדכון מלאי
         product_id: adjustProduct.product_id,
         qty_change,
         reason: adjustReason.trim(),
       });
-
+      // ריענון טבלה
       await load();
-
+      // סגירת מודאל וניקוי שדות
       setAdjustProduct(null);
       setAdjustQty('');
       setAdjustReason('Purchase');
-
+      // הודעת הצלחה מתחלפת
       setFlashMsg('Stock updated successfully ✔️');
       setTimeout(() => setFlashMsg(''), 3000);
     } catch (err) {
@@ -106,10 +111,10 @@ export default function AdminInventory() {
 
   // היסטוריית תנועות
   const openHistory = async (row) => {
-    const moves = await fetchMovements(row.product_id);
-    setSel({ ...row, moves });
+    const moves = await fetchMovements(row.product_id);// תנועות מלאי
+    setSel({ ...row, moves });// שמירה בסטייט
   };
-
+  // פונקציה לבניית כותרת טבלה עם מיון
   const th = (key, label) => (
     <th
       onClick={() => {
@@ -272,7 +277,7 @@ export default function AdminInventory() {
               className="inv-input"
               value={adjustQty}
               onChange={(e) => setAdjustQty(e.target.value)}
-              placeholder="e.g. 5 or -2"
+              placeholder="Enter the quantity"
             />
 
             <label className="inv-label">
